@@ -31,8 +31,8 @@ class MapConfig(
         }
 
         // stupid legacy location format
-        private fun locFromString(s: String, world: World): Location? {
-            val split = s.split("\\,").toTypedArray()
+        fun locFromString(s: String, world: World): Location? {
+            val split = s.split(",")
             val values = IntArray(split.size)
             for (i in split.indices) values[i] = Integer.valueOf(split[i])
             if (values.size >= 3) {
