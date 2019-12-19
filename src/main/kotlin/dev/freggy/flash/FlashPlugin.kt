@@ -16,6 +16,7 @@ import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
 import java.io.File
 
+
 class FlashPlugin : JavaPlugin(), Listener {
 
     private var playerCheckTask: BukkitTask? = null
@@ -23,7 +24,8 @@ class FlashPlugin : JavaPlugin(), Listener {
     private var gamerTimerTask: BukkitTask? = null
     private var lobbyTime = 20
     private var roundTime = 3600
-
+    private var startTime = 0L
+    private var mapConfig: MapConfig? = null
 
     private val mapVoting by lazy { MapVoting(this.loadMapInfo()) }
     private val scoreboard by lazy { FlashScoreboard(this) }
@@ -99,7 +101,9 @@ class FlashPlugin : JavaPlugin(), Listener {
 
     private fun startGame() {
         val map = this.mapVoting.determineMap()
+        this.mapConfig = map
         this.mapVoting.end()
+
         val world = this.loadMap(map)
         this.scoreboard.startDisplay()
 
@@ -114,6 +118,8 @@ class FlashPlugin : JavaPlugin(), Listener {
             it.giveItems()
             it.teleport(location)
         }
+
+        this.startTime = System.currentTimeMillis()
 
         this.state = GameState.RUNNING
         this.gamerTimerTask = Bukkit.getScheduler().runTaskTimer(this, {
@@ -170,17 +176,33 @@ class FlashPlugin : JavaPlugin(), Listener {
     private fun onPlayerReachCheckpoint(event: PlayerCheckpointEvent) {
         val player = event.player
         player.setCurrentCheckpoint(event.checkpoint)
-        player.playSound(player.location, Sound.LEVEL_UP, 1.0F, 1.0F)
 
-        // TODO: display message
-        // TODO: spawn firework
-        // TODO: Update scoreboard
+        val index = player.getCurrentCheckPointIndex()
+        player.playSound(player.location, Sound.LEVEL_UP, 1.0F, 1.0F)
+        player.sendMessage("$PREFIX $7Du hast einen Checkpoint erreicht! §b[${index}/${mapConfig?.checkpoints}")
+
+        Bukkit.getOnlinePlayers()
+            .filter { it != player }
+            .forEach { it.sendMessage("$PREFIX §7Der Spieler §a${player.name} hat den §b${index}. $7Checkpoint erreicht.") }
+
+        spawnRandomFirework(this, player.location.clone())
     }
 
     @EventHandler
     private fun onPlayerFinished(event: PlayerFinishedEvent) {
-        Bukkit.broadcastMessage(event.player.name)
-        event.player.gameMode = GameMode.SPECTATOR
+        val player = event.player
+        player.gameMode = GameMode.SPECTATOR
+
+        val needed = event.finished - startTime
+        val minutes = needed / (1000 * 60)
+        val seconds = needed / 1000 % 60
+        val millis = needed % 1000
+
+        val formatted = String.format("%02d:%02d.%03d", minutes, seconds, millis)
+        player.sendMessage("$PREFIX §7Du hast insgesamt §b$formatted §7benötigt.")
+
+        Bukkit.broadcastMessage("$PREFIX §a${event.player.name} §bhat das Ziel erreicht.")
+        Bukkit.getOnlinePlayers().forEach { it.playSound(it.location, Sound.ENDERDRAGON_GROWL, 1f, 1f) }
     }
 
     @EventHandler

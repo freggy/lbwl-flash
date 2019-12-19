@@ -21,7 +21,7 @@ class FlashScoreboard(val plugin: FlashPlugin) {
     init {
         val obj = handle.registerNewObjective("scoreboard", "dummy")
         obj.displaySlot = DisplaySlot.SIDEBAR
-        obj.displayName = "FLASH"
+        obj.displayName = "§e>> §6Flash"
         obj.getScore("§e§lServer-IP:").score = 999
         obj.getScore("§fbergwerkLABS.de").score = 998
         obj.getScore("§1§2§3").score = 997
@@ -44,7 +44,7 @@ class FlashScoreboard(val plugin: FlashPlugin) {
     }
 
     fun updateTitle(title: String) {
-        handle.getObjective("scoreboard").displayName = title
+        handle.getObjective("scoreboard").displayName = "$PREFIX §b$title"
     }
 
     fun destroy() {

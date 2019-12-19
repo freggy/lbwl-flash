@@ -27,7 +27,7 @@ class PlayerListener(private val plugin: Plugin) : Listener {
         if (event.clickedBlock?.type != Material.WOOD_PLATE) return
         val type = event.clickedBlock.location.subtract(0.0, 1.0, 0.0).block.type
         if (type != Material.WOOL) return
-        Bukkit.getPluginManager().callEvent(PlayerFinishedEvent(event.player))
+        Bukkit.getPluginManager().callEvent(PlayerFinishedEvent(event.player, System.currentTimeMillis()))
     }
 
     @EventHandler

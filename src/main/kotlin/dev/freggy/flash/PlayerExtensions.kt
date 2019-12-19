@@ -52,7 +52,7 @@ fun Player.applyEffects() {
 
 fun Player.toggleVisibility() {
     if (this.inventory.getItem(5).type == Material.BLAZE_ROD) {
-        this.sendMessage("Du hast alle Spieler §cversteckt.")
+        this.sendMessage("$PREFIX $7Du hast alle Spieler §cversteckt§7.")
         this.playSound(this.location, Sound.NOTE_PLING, 1.0F, 1.0F)
         this.inventory.setItem(5, SHOW_PLAYER_ITEM)
         Bukkit.getOnlinePlayers()
@@ -60,7 +60,7 @@ fun Player.toggleVisibility() {
             .forEach { this.hidePlayer(it) }
     } else {
         this.inventory.setItem(5, HIDE_PLAYER_ITEM)
-        player.sendMessage("Du §asiehst §7nun alle Spieler.")
+        player.sendMessage("$PREFIX §/Du §asiehst §7nun alle Spieler§7.")
         player.playSound(player.location, Sound.NOTE_PLING, 1.0F, 1.0F)
         Bukkit.getOnlinePlayers()
             .filter { it != player }
@@ -71,12 +71,4 @@ fun Player.toggleVisibility() {
 fun Player.giveItems() {
     this.inventory.setItem(3, RESPAWN_ITEM)
     this.inventory.setItem(5, HIDE_PLAYER_ITEM)
-}
-
-private fun create(material: Material, data: Short, name: String): ItemStack {
-    val item = ItemStack(material, 1, data)
-    val meta = item.itemMeta
-    meta.displayName = name
-    item.itemMeta = meta
-    return item
 }
