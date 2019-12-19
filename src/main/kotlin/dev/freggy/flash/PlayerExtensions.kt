@@ -1,14 +1,17 @@
 package dev.freggy.flash
 
-import org.bukkit.GameMode
-import org.bukkit.Location
-import org.bukkit.Sound
+import org.bukkit.*
 import org.bukkit.entity.Player
+import org.bukkit.inventory.ItemStack
 import java.util.*
 import org.bukkit.potion.PotionEffectType
 import org.bukkit.potion.PotionEffect
 
 private val gameData = WeakHashMap<Player, GameData>()
+
+val HIDE_PLAYER_ITEM = create(Material.BLAZE_ROD, 0, "§c§lSpieler verstecken §r§7§o<Rechtsklick>")
+val SHOW_PLAYER_ITEM = create(Material.STICK, 0, "§c§lSpieler anzeigen §r§7§o<Rechtsklick>")
+val RESPAWN_ITEM = create(Material.INK_SACK, 1, "§c§lInstant-Tod(TM) §r§7§o<Rechtsklick>")
 
 fun Player.initGameData(speed: Int, spawn: Location) {
     gameData[player] = GameData(mutableSetOf(), speed, spawn)
@@ -28,8 +31,6 @@ fun Player.setCurrentCheckpoint(checkpoint: Checkpoint) {
 fun Player.respawn() {
     this.applyEffects()
 
-    println("lol")
-
     if (gameData[player]!!.checkpoints.isEmpty()) {
         this.teleport(gameData[player]?.spawn)
     } else {
@@ -47,4 +48,35 @@ fun Player.applyEffects() {
     this.activePotionEffects.forEach { this.removePotionEffect(it.type) }
     this.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 3))
     this.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, gameData[player]!!.mapSpeed))
+}
+
+fun Player.toggleVisibility() {
+    if (this.inventory.getItem(5).type == Material.BLAZE_ROD) {
+        this.sendMessage("Du hast alle Spieler §cversteckt.")
+        this.playSound(this.location, Sound.NOTE_PLING, 1.0F, 1.0F)
+        this.inventory.setItem(5, SHOW_PLAYER_ITEM)
+        Bukkit.getOnlinePlayers()
+            .filter { it != this }
+            .forEach { this.hidePlayer(it) }
+    } else {
+        this.inventory.setItem(5, HIDE_PLAYER_ITEM)
+        player.sendMessage("Du §asiehst §7nun alle Spieler.")
+        player.playSound(player.location, Sound.NOTE_PLING, 1.0F, 1.0F)
+        Bukkit.getOnlinePlayers()
+            .filter { it != player }
+            .forEach { player.showPlayer(it) }
+    }
+}
+
+fun Player.giveItems() {
+    this.inventory.setItem(3, RESPAWN_ITEM)
+    this.inventory.setItem(5, HIDE_PLAYER_ITEM)
+}
+
+private fun create(material: Material, data: Short, name: String): ItemStack {
+    val item = ItemStack(material, 1, data)
+    val meta = item.itemMeta
+    meta.displayName = name
+    item.itemMeta = meta
+    return item
 }

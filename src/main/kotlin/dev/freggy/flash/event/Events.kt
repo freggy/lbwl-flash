@@ -15,3 +15,12 @@ class PlayerCheckpointEvent(player: Player, val checkpoint: Checkpoint) : Player
 
     override fun getHandlers() = handlerList
 }
+
+class PlayerFinishedEvent(player: Player) : PlayerEvent(player){
+    companion object {
+        @JvmStatic
+        val handlerList = HandlerList()
+    }
+
+    override fun getHandlers() = handlerList
+}
