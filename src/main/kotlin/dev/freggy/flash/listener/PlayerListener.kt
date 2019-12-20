@@ -15,9 +15,10 @@ import org.bukkit.event.block.Action
 import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.plugin.Plugin
 
-class PlayerListener(private val plugin: Plugin) : Listener {
+class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
 
     @EventHandler
@@ -60,6 +61,15 @@ class PlayerListener(private val plugin: Plugin) : Listener {
     }
 
     @EventHandler
+    private fun onPlayerJoin(event: PlayerJoinEvent) {
+        if (this.plugin.state != GameState.WAITING) {
+            event.player.gameMode = GameMode.SPECTATOR
+            return
+        }
+        event.player.inventory.setItem(4, create(Material.EMPTY_MAP, 0, "§a§lMap-Auswahl"))
+    }
+
+    @EventHandler
     private fun onItemInteract(event: PlayerInteractEvent) {
         if (event.action != Action.RIGHT_CLICK_AIR && event.action != Action.RIGHT_CLICK_BLOCK) return
         if (event.item == null) return
@@ -74,6 +84,11 @@ class PlayerListener(private val plugin: Plugin) : Listener {
 
         if (type == Material.BLAZE_ROD || type == Material.STICK) {
             event.player.toggleVisibility()
+            return
+        }
+
+        if (type == Material.EMPTY_MAP) {
+            this.plugin.mapVoting.open(player)
             return
         }
     }

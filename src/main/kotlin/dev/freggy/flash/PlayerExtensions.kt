@@ -69,6 +69,7 @@ fun Player.toggleVisibility() {
 }
 
 fun Player.giveItems() {
+    this.inventory.clear()
     this.inventory.setItem(3, RESPAWN_ITEM)
     this.inventory.setItem(5, HIDE_PLAYER_ITEM)
 }

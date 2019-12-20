@@ -14,7 +14,6 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
-import org.github.paperspigot.Title
 import java.io.File
 import kotlin.math.max
 
@@ -29,10 +28,11 @@ class FlashPlugin : JavaPlugin(), Listener {
     private var startTime = 0L
     private var mapConfig: MapConfig? = null
 
-    private val mapVoting by lazy { MapVoting(this.loadMapInfo()) }
     private val scoreboard by lazy { FlashScoreboard(this) }
     private val maxPlayers = 10
     private val minPlayers = 1
+
+    val mapVoting by lazy { MapVoting(this.loadMapInfo()) }
 
     var state = GameState.INIT
         set(value) {
@@ -40,7 +40,7 @@ class FlashPlugin : JavaPlugin(), Listener {
             field = value
         }
 
-    fun startWaitingPhase() {
+    private fun startWaitingPhase() {
         this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, {
             val currentPlayers = Bukkit.getOnlinePlayers().size
             val needed = max(minPlayers - currentPlayers, 0)
@@ -74,6 +74,7 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
+        this.state = GameState.INIT
         Bukkit.getPluginManager().registerEvents(this, this)
         Bukkit.getPluginManager().registerEvents(PlayerListener(this), this)
         Bukkit.getPluginManager().registerEvents(CancelListener(this), this)
