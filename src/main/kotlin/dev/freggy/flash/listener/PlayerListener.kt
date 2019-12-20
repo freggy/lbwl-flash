@@ -48,6 +48,14 @@ class PlayerListener(private val plugin: Plugin) : Listener {
             Bukkit.getPluginManager().callEvent(
                 PlayerCheckpointEvent(player, Checkpoint(player.location.clone(), System.currentTimeMillis()))
             )
+            return
+        }
+
+        if (number > player.getCurrentCheckPointIndex() + 1) {
+            player.sendMessage("$PREFIX §cDu hast ein Checkpoint übersprungen! Du wurdest zurück teleportiert!")
+            player.respawn()
+            player.playSound(player.location, Sound.ENDERMAN_DEATH, 1.0F, 1.0F)
+            return
         }
     }
 

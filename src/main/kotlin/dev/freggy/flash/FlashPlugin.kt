@@ -176,10 +176,11 @@ class FlashPlugin : JavaPlugin(), Listener {
     private fun onPlayerReachCheckpoint(event: PlayerCheckpointEvent) {
         val player = event.player
         player.setCurrentCheckpoint(event.checkpoint)
+        player.applyEffects()
 
         val index = player.getCurrentCheckPointIndex()
         player.playSound(player.location, Sound.LEVEL_UP, 1.0F, 1.0F)
-        player.sendMessage("$PREFIX $7Du hast einen Checkpoint erreicht! §b[${index}/${mapConfig?.checkpoints}")
+        player.sendMessage("$PREFIX §7Du hast einen Checkpoint erreicht! §b[${index}/${mapConfig?.checkpoints}]")
 
         Bukkit.getOnlinePlayers()
             .filter { it != player }
