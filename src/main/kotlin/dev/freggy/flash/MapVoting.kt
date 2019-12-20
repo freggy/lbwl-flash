@@ -22,13 +22,13 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
     private val inventory: Inventory = Bukkit.createInventory(null, 5 * 9, "Maps")
 
     private fun updateInventory() {
-        for (i in 0 until this.maps.size) {
+        for (i in this.maps.indices) {
             val map = this.maps[i]
             val votes = votes[map.name] ?: 0
             val stack = ItemStack(map.item, votes, 0)
             val meta = stack.itemMeta
-            meta.displayName = "§f${map.name}"
-            meta.lore = listOf("", "§fErbauer: ${map.builder}")
+            meta.displayName = if (map.mode == "easy") "§a${map.name}" else "§c${map.name}"
+            meta.lore = listOf("", "§eErbauer: §b${map.builder}")
             stack.itemMeta = meta
             this.inventory.setItem(i, stack)
         }

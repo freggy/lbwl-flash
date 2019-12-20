@@ -12,6 +12,7 @@ class MapConfig(
     val checkpoints: Int,
     val builder: String,
     val time: Int,
+    val mode: String,
     val speedLevel: Int,
     val item: Material,
     val spawnString: String
@@ -24,6 +25,7 @@ class MapConfig(
                 yaml.getInt("checkpoints"),
                 yaml.getString("author").orEmpty(),
                 yaml.getInt("time"),
+                yaml.getString("mode"),
                 yaml.getInt("speedLevel"),
                 Material.valueOf(yaml.getString("item")?.toUpperCase() ?: "STONE"),
                 yaml.getString("spawn")

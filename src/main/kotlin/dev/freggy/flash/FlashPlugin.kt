@@ -14,7 +14,9 @@ import org.bukkit.event.Listener
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
+import org.github.paperspigot.Title
 import java.io.File
+import kotlin.math.max
 
 
 class FlashPlugin : JavaPlugin(), Listener {
@@ -41,7 +43,7 @@ class FlashPlugin : JavaPlugin(), Listener {
     fun startWaitingPhase() {
         this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, {
             val currentPlayers = Bukkit.getOnlinePlayers().size
-            val needed = minPlayers - currentPlayers
+            val needed = max(minPlayers - currentPlayers, 0)
 
             Bukkit.broadcastMessage("Noch Benötigte Spieler: $needed")
 
@@ -184,7 +186,7 @@ class FlashPlugin : JavaPlugin(), Listener {
 
         Bukkit.getOnlinePlayers()
             .filter { it != player }
-            .forEach { it.sendMessage("$PREFIX §7Der Spieler §a${player.name} hat den §b${index}. $7Checkpoint erreicht.") }
+            .forEach { it.sendMessage("$PREFIX §7Der Spieler §a${player.name} §7hat den §b${index}. §7Checkpoint erreicht.") }
 
         spawnRandomFirework(this, player.location.clone())
     }
