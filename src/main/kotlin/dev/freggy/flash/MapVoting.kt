@@ -74,6 +74,7 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
 
     @EventHandler
     private fun onInventoryClick(event: InventoryClickEvent) {
+        if (event.clickedInventory == null) return
         if (event.clickedInventory.name != "Maps") return
         if (event.currentItem == null) return
         if (event.currentItem.itemMeta == null) return

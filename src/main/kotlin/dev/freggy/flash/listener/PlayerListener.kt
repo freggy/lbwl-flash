@@ -63,10 +63,12 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
     @EventHandler
     private fun onPlayerJoin(event: PlayerJoinEvent) {
+        event.player.inventory.clear()
         if (this.plugin.state != GameState.WAITING) {
             event.player.gameMode = GameMode.SPECTATOR
             return
         }
+        event.player.applyEffects()
         event.player.teleport(this.plugin.spawnLocation)
         event.player.inventory.setItem(4, create(Material.COMPASS, 0, "§a§lMap-Auswahl"))
     }

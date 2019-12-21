@@ -89,7 +89,6 @@ class FlashPlugin : JavaPlugin(), Listener {
         this.state = GameState.WAITING
     }
 
-
     override fun onCommand(
         sender: CommandSender?,
         command: Command?,
@@ -97,12 +96,10 @@ class FlashPlugin : JavaPlugin(), Listener {
         args: Array<out String>?
     ): Boolean {
         if (label.equals("lol")) {
-
-            if (args!!.isNotEmpty()) {
-                (sender as Player).respawn()
-                return false
+            val player = (sender as Player)
+            player.activePotionEffects.forEach {
+                player.sendMessage(it.toString())
             }
-            this.mapVoting.open(sender as Player)
         }
         return true
     }

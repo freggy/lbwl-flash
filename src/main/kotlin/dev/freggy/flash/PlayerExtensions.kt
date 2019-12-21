@@ -47,7 +47,7 @@ fun Player.respawn() {
 fun Player.applyEffects() {
     this.activePotionEffects.forEach { this.removePotionEffect(it.type) }
     this.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 3))
-    this.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, gameData[player]!!.mapSpeed))
+    this.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, gameData[player]?.mapSpeed ?: 19 ))
 }
 
 fun Player.toggleVisibility() {
