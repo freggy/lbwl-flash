@@ -66,7 +66,8 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
             event.player.gameMode = GameMode.SPECTATOR
             return
         }
-        event.player.inventory.setItem(4, create(Material.EMPTY_MAP, 0, "§a§lMap-Auswahl"))
+        event.player.teleport(this.plugin.spawnLocation)
+        event.player.inventory.setItem(4, create(Material.COMPASS, 0, "§a§lMap-Auswahl"))
     }
 
     @EventHandler
@@ -87,7 +88,7 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
             return
         }
 
-        if (type == Material.EMPTY_MAP) {
+        if (type == Material.COMPASS) {
             this.plugin.mapVoting.open(player)
             return
         }
@@ -98,6 +99,7 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
         event.keepInventory = true
         event.entity.player.spigot().respawn()
         Bukkit.getScheduler().runTaskLater(plugin, { event.entity.respawn() }, 1)
+        event.deathMessage = null
     }
 
     @EventHandler

@@ -31,8 +31,12 @@ class FlashPlugin : JavaPlugin(), Listener {
     private val scoreboard by lazy { FlashScoreboard(this) }
     private val maxPlayers = 10
     private val minPlayers = 1
-
+    
     val mapVoting by lazy { MapVoting(this.loadMapInfo()) }
+    val spawnLocation by lazy { 
+        Location(Bukkit.getWorld("spawn"), 37.5, 77.0, -82.5, 90.0F, 0.0F);
+    }
+
 
     var state = GameState.INIT
         set(value) {
@@ -74,6 +78,8 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
+        this.spawnLocation.chunk.load();
+
         this.state = GameState.INIT
         Bukkit.getPluginManager().registerEvents(this, this)
         Bukkit.getPluginManager().registerEvents(PlayerListener(this), this)
