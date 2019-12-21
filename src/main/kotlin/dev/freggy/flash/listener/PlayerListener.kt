@@ -68,6 +68,7 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
             event.player.gameMode = GameMode.SPECTATOR
             return
         }
+        event.player.gameMode = GameMode.ADVENTURE
         event.player.applyEffects()
         event.player.teleport(this.plugin.spawnLocation)
         event.player.inventory.setItem(4, create(Material.COMPASS, 0, "§a§lMap-Auswahl"))
