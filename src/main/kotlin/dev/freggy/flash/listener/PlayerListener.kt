@@ -16,6 +16,7 @@ import org.bukkit.event.entity.EntityDamageEvent
 import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
+import org.bukkit.event.player.PlayerLoginEvent
 import org.bukkit.plugin.Plugin
 
 class PlayerListener(private val plugin: FlashPlugin) : Listener {
@@ -68,6 +69,12 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
         }
         event.player.teleport(this.plugin.spawnLocation)
         event.player.inventory.setItem(4, create(Material.COMPASS, 0, "§a§lMap-Auswahl"))
+    }
+
+    @EventHandler
+    private fun onPlayerLogin(event: PlayerLoginEvent) {
+        if (this.plugin.state != GameState.INIT) return
+        event.disallow(PlayerLoginEvent.Result.KICK_OTHER, "§cServer initialisiert...")
     }
 
     @EventHandler

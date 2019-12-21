@@ -37,7 +37,6 @@ class FlashPlugin : JavaPlugin(), Listener {
         Location(Bukkit.getWorld("spawn"), 37.5, 77.0, -82.5, 90.0F, 0.0F);
     }
 
-
     var state = GameState.INIT
         set(value) {
             // TODO: update kubernetes

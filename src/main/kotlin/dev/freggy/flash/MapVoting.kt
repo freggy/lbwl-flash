@@ -64,6 +64,10 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
     }
 
     fun determineMap(): MapConfig {
+        // choose random map if no-one has voted
+        if (this.votes.values.sum() == 0) return this.maps.shuffled()[0]
+    
+        // find the map with the highest votes
         val name = this.votes.toList().maxBy { (_, value) -> value }!!
         return this.maps.find { config -> name.first == config.name }!!
     }
