@@ -220,7 +220,7 @@ class FlashPlugin : JavaPlugin(), Listener {
 
         val formatted = String.format("%02d:%02d.%03d", minutes, seconds, millis)
         player.sendMessage("$PREFIX §7Du hast insgesamt §b$formatted §7benötigt.")
-        player.sendTweetLink(this.mapConfig.name, formatted)
+        player.sendTweetLink(this.mapConfig!!.name, formatted)
 
         Bukkit.broadcastMessage("$PREFIX §a${event.player.name} §bhat das Ziel erreicht.")
         Bukkit.getOnlinePlayers().forEach { it.playSound(it.location, Sound.ENDERDRAGON_GROWL, 1f, 1f) }
