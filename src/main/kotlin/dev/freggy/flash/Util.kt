@@ -1,11 +1,11 @@
 package dev.freggy.flash
 
+import net.md_5.bungee.api.chat.*
 import org.bukkit.*
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
-import org.bukkit.scheduler.BukkitRunnable
 import java.util.*
 
 
@@ -23,22 +23,22 @@ fun create(material: Material, data: Short, name: String): ItemStack {
     return item
 }
 
-fun createTwitterLink(click: String, tweet: String, vararg hashtags: String): BaseComponent[] {
-    val url = new StringBuilder();
-    url.append("http://twitter.com/intent/tweet?text=");
-    url.append(tweet);
-    if (hashtags.length > 0) {
-        url.append("&hashtags=");
-        for (int i = 0; i < hashtags.length; i++) {
-             url.append(hashtags[i]);
-             if (i != hashtags.length - 1) {
-                 url.append(",");
-             }
+fun createTwitterLink(click: String, tweet: String, vararg hashtags: String): Array<BaseComponent>  {
+    val url = StringBuilder()
+    url.append("http://twitter.com/intent/tweet?text=")
+    url.append(tweet)
+    if (hashtags.isNotEmpty()) {
+        url.append("&hashtags=")
+        for (i in hashtags.indices) {
+            url.append(hashtags[i])
+            if (i != hashtags.size - 1) {
+                url.append(",")
+            }
         }
     }
-    val builder = new ComponentBuilder(" " + click)
-        .event(new ClickEvent(ClickEvent.Action.OPEN_URL, url.toString().replaceAll(" ", "%20")))
-        .event(new HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Öffnet ein Fenster zu Twitter.")));
+    val builder = ComponentBuilder(" $click")
+        .event(ClickEvent(ClickEvent.Action.OPEN_URL, url.toString().replace(" ", "%20")))
+        .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Öffnet ein Fenster zu Twitter.")));
     return builder.create();
 }
 

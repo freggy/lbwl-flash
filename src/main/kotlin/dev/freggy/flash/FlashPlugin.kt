@@ -46,13 +46,13 @@ class FlashPlugin : JavaPlugin(), Listener {
         }
 
     private fun startWaitingPhase() {
+        var counter = 0
         this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, {
             val currentPlayers = Bukkit.getOnlinePlayers().size
             val needed = max(minPlayers - currentPlayers, 0)
 
-            Bukkit.getOnlinePlayers().forEach {
-                it.sendActionbarMessage("$PREFIX §7Noch benötigte Spieler: §b$needed")
-            }
+            counter++
+            if (counter % 5 == 0) Bukkit.broadcastMessage("$PREFIX §7Noch benötigte Spieler: §b$needed")
 
             if (currentPlayers < this.minPlayers) {
                 this.lobbyTime = 20
