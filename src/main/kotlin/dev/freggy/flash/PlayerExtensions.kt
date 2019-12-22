@@ -47,6 +47,16 @@ fun Player.respawn() {
     this.fallDistance = 0.0F
 }
 
+fun Player.sendTweetLink(map: String, time: String) {
+    val link = createTwitterLink(
+        "§b§l>§r §eTEILE DEINEN REKORD §b§l<", 
+        "Ich habe einen neuen FLASH-Rekord auf $map erreicht: $time Minuten",
+        "FLASHRecords",
+        "IntoTheLABS"
+    )
+    this.spigot().sendMessage(link)
+}
+
 fun Player.applyEffects() {
     this.activePotionEffects.forEach { this.removePotionEffect(it.type) }
     this.addPotionEffect(PotionEffect(PotionEffectType.REGENERATION, Integer.MAX_VALUE, 3))
