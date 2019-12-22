@@ -1,11 +1,14 @@
 package dev.freggy.flash
 
+import net.minecraft.server.v1_8_R3.IChatBaseComponent
+import net.minecraft.server.v1_8_R3.PacketPlayOutChat
 import org.bukkit.*
+import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer
 import org.bukkit.entity.Player
-import org.bukkit.inventory.ItemStack
-import java.util.*
-import org.bukkit.potion.PotionEffectType
 import org.bukkit.potion.PotionEffect
+import org.bukkit.potion.PotionEffectType
+import java.util.*
+
 
 private val gameData = WeakHashMap<Player, GameData>()
 
@@ -66,6 +69,11 @@ fun Player.toggleVisibility() {
             .filter { it != player }
             .forEach { player.showPlayer(it) }
     }
+}
+
+fun Player.sendActionbarMessage(message: String) {
+    val packet = PacketPlayOutChat(IChatBaseComponent.ChatSerializer.a("{\"text\":\"$message\"}"), 2.toByte())
+    (this as CraftPlayer).handle.playerConnection.sendPacket(packet)
 }
 
 fun Player.giveItems() {

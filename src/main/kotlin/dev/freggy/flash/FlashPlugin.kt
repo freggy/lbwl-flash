@@ -31,9 +31,11 @@ class FlashPlugin : JavaPlugin(), Listener {
     private val scoreboard by lazy { FlashScoreboard(this) }
     private val maxPlayers = 10
     private val minPlayers = 1
-    
+
+    var mapSpawnLocation: Location? = null
+
     val mapVoting by lazy { MapVoting(this.loadMapInfo()) }
-    val spawnLocation by lazy { 
+    val spawnLocation by lazy {
         Location(Bukkit.getWorld("spawn"), 37.5, 77.0, -82.5, 90.0F, 0.0F);
     }
 
@@ -48,7 +50,9 @@ class FlashPlugin : JavaPlugin(), Listener {
             val currentPlayers = Bukkit.getOnlinePlayers().size
             val needed = max(minPlayers - currentPlayers, 0)
 
-            Bukkit.broadcastMessage("Noch Benötigte Spieler: $needed")
+            Bukkit.getOnlinePlayers().forEach {
+                it.sendActionbarMessage("$PREFIX §7Noch benötigte Spieler: §b$needed")
+            }
 
             if (currentPlayers < this.minPlayers) {
                 this.lobbyTime = 20
@@ -77,7 +81,7 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     override fun onEnable() {
-        this.spawnLocation.chunk.load();
+        this.spawnLocation.chunk.load()
 
         this.state = GameState.INIT
         Bukkit.getPluginManager().registerEvents(this, this)
@@ -109,19 +113,23 @@ class FlashPlugin : JavaPlugin(), Listener {
         this.mapConfig = map
         this.mapVoting.end()
 
+        Bukkit.broadcastMessage("$PREFIX §aDie Mapabstimmung ist beendet!")
+        Bukkit.broadcastMessage("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.builder} §7gespielt!")
+
         val world = this.loadMap(map)
         this.scoreboard.startDisplay()
 
+        this.mapSpawnLocation = MapConfig.locFromString(map.spawnString, world)
+
         Bukkit.getOnlinePlayers().forEach {
-            val location = MapConfig.locFromString(map.spawnString, world)
             this.scoreboard.show(it)
-            it.initGameData(map.speedLevel, location!!)
+            it.initGameData(map.speedLevel, this.mapSpawnLocation!!)
             it.gameMode = GameMode.ADVENTURE
             it.isFlying = false
             it.allowFlight = false
             it.applyEffects()
             it.giveItems()
-            it.teleport(location)
+            it.teleport(this.mapSpawnLocation)
         }
 
         this.startTime = System.currentTimeMillis()
@@ -198,6 +206,12 @@ class FlashPlugin : JavaPlugin(), Listener {
     private fun onPlayerFinished(event: PlayerFinishedEvent) {
         val player = event.player
         player.gameMode = GameMode.SPECTATOR
+
+        // Show all players again, since if previously hidden
+        // the player cannot use the teleport functionality
+        Bukkit.getOnlinePlayers()
+            .filter { it != player }
+            .forEach { player.showPlayer(it) }
 
         val needed = event.finished - startTime
         val minutes = needed / (1000 * 60)

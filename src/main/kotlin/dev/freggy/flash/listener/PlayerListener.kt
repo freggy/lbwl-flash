@@ -34,7 +34,10 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
     @EventHandler
     private fun onCheckpointTriggered(event: PlayerInteractEvent) {
-        if (event.player.gameMode == GameMode.SPECTATOR) return
+        if (event.player.gameMode == GameMode.SPECTATOR) {
+            event.isCancelled = true
+            return
+        }
         if (event.action != Action.PHYSICAL) return
         if (event.clickedBlock?.type != Material.STONE_PLATE) return
 
@@ -63,15 +66,17 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
     @EventHandler
     private fun onPlayerJoin(event: PlayerJoinEvent) {
-        event.player.inventory.clear()
+        val player = event.player
+        player.inventory.clear()
         if (this.plugin.state != GameState.WAITING) {
-            event.player.gameMode = GameMode.SPECTATOR
+            player.gameMode = GameMode.SPECTATOR
+            player.teleport(this.plugin.mapSpawnLocation)
             return
         }
-        event.player.gameMode = GameMode.ADVENTURE
-        event.player.applyEffects()
-        event.player.teleport(this.plugin.spawnLocation)
-        event.player.inventory.setItem(4, create(Material.COMPASS, 0, "§a§lMap-Auswahl"))
+        player.gameMode = GameMode.ADVENTURE
+        player.applyEffects()
+        player.teleport(this.plugin.spawnLocation)
+        player.inventory.setItem(4, create(Material.COMPASS, 0, "§a§lMap-Auswahl"))
     }
 
     @EventHandler
@@ -115,7 +120,11 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
     @EventHandler
     private fun onEntityDamage(event: EntityDamageEvent) {
         if (event.entity !is Player) return
+        val player = event.entity as Player
+
+        if (!player.isIngame()) event.isCancelled = true
         if (event.cause != EntityDamageEvent.DamageCause.VOID) return
-        (event.entity as Player).respawn()
+
+        player.respawn()
     }
 }
