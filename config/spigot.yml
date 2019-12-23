@@ -8,7 +8,7 @@ messages:
   restart: Server is restarting
 settings:
   save-user-cache-on-stop-only: false
-  bungeecord: false
+  bungeecord: true
   late-bind: false
   sample-count: 12
   player-shuffle: 0

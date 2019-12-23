@@ -26,6 +26,7 @@
 .classpath
 .settings/
 .project
+maps/
 
 # Gradle
 .idea/**/gradle.xml
