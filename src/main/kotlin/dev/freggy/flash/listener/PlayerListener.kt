@@ -21,7 +21,6 @@ import org.bukkit.plugin.Plugin
 
 class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
-
     @EventHandler
     private fun onFinishTriggered(event: PlayerInteractEvent) {
         if (event.player.gameMode == GameMode.SPECTATOR) return

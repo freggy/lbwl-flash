@@ -22,13 +22,17 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
     private val inventory: Inventory = Bukkit.createInventory(null, 5 * 9, "Maps")
 
     private fun updateInventory() {
-        for (i in this.maps.indices) {
-            val map = this.maps[i]
+        // Probably pretty inefficient for sorting by difficulty, but it does the job and 
+        // efficiency doesn't really matter in this context.
+        // Maps with easy difficulty should be listed first ('e' before 'h') 
+        val sorted = this.maps.sortedWith(compareBy({ it.mode.first() }))
+        for (i in sorted.indices) {
+            val map = this.sorted[i]
             val votes = votes[map.name] ?: 0
             val stack = ItemStack(map.item, votes, 0)
             val meta = stack.itemMeta
             meta.displayName = if (map.mode == "easy") "§a${map.name}" else "§c${map.name}"
-            meta.lore = listOf("", "§eErbauer: §b${map.builder}")
+            meta.lore = listOf("§eErbauer: §b${map.builder}")
             stack.itemMeta = meta
             this.inventory.setItem(i, stack)
         }
