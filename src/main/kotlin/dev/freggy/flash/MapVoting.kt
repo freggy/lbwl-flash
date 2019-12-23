@@ -27,7 +27,7 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
         // Maps with easy difficulty should be listed first ('e' before 'h') 
         val sortedMaps = this.maps.sortedWith(compareBy({ it.mode.first() }))
         for (i in sortedMaps.indices) {
-            val map = this.sortedMaps[i]
+            val map = sortedMaps[i]
             val votes = votes[map.name] ?: 0
             val stack = ItemStack(map.item, votes, 0)
             val meta = stack.itemMeta
