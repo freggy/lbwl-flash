@@ -3,10 +3,11 @@ FROM maven:3.6.3-jdk-8-slim AS builder
 COPY . .
 RUN mvn package
 
-FROM felixklauke/paperspigot:1.8.8
+FROM paperspigot:1.8.8
 
 # TODO: pull maps from cloud storage
 
-COPY maps/ /opt/minecraft/plugins/Flash/maps
-COPY config/ /opt/minecraft/config
-COPY --from=builder target/flash.jar /opt/minecraft/plugins
+COPY maps/runs /opt/spigot/plugins/Flash/maps
+COPY maps/spawns/spawn/ /opt/spigot/spawn
+COPY config/* /opt/spigot/
+COPY --from=builder target/flash.jar /opt/spigot/plugins
