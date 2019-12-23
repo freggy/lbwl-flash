@@ -1,7 +1,9 @@
 package dev.freggy.flash
 
+import com.google.common.io.ByteStreams
 import org.bukkit.*
 import org.bukkit.entity.Player
+import org.bukkit.plugin.Plugin
 import org.bukkit.potion.PotionEffect
 import org.bukkit.potion.PotionEffectType
 import java.util.*
@@ -82,4 +84,12 @@ fun Player.giveItems() {
     this.inventory.clear()
     this.inventory.setItem(3, RESPAWN_ITEM)
     this.inventory.setItem(5, HIDE_PLAYER_ITEM)
+}
+
+fun Player.connectToLobby(plugin: Plugin) {
+    val out = ByteStreams.newDataOutput()
+    out.writeUTF("ConnectOther")
+    out.writeUTF(this.name)
+    out.writeUTF("lobby")
+    this.sendPluginMessage(plugin, "BungeeCord", out.toByteArray())
 }

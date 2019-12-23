@@ -85,7 +85,7 @@ class FlashPlugin : JavaPlugin(), Listener {
 
     override fun onEnable() {
         this.spawnLocation.chunk.load()
-
+        this.server.messenger.registerOutgoingPluginChannel(this, "BungeeCord")
 
         this.state = GameState.INIT
         Bukkit.getPluginManager().registerEvents(this, this)
@@ -103,11 +103,13 @@ class FlashPlugin : JavaPlugin(), Listener {
         label: String?,
         args: Array<out String>?
     ): Boolean {
+        if (sender !is Player) return false
         if (label.equals("lol")) {
-            val player = (sender as Player)
-            player.activePotionEffects.forEach {
-                player.sendMessage(it.toString())
+            sender.activePotionEffects.forEach {
+                sender.sendMessage(it.toString())
             }
+        } else if (label.equals("hub", true)) {
+            sender.connectToLobby(this) // I am too lazy to write an extra BungeeCord plugin
         }
         return true
     }
@@ -159,8 +161,14 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     private fun stop() {
-        Bukkit.broadcastMessage("Der Server stoppt in 20 Sekunden.")
+        Bukkit.broadcastMessage("§cDer Server stoppt in 20 Sekunden.")
         this.state = GameState.FINISHING
+
+        // Teleport players 5 seconds earlier to lobby just to be sure
+        Bukkit.getScheduler().runTaskLater(this, {
+            Bukkit.getOnlinePlayers().forEach { it.connectToLobby(this) }
+        }, 20 * 15)
+
         Bukkit.getScheduler().runTaskLater(this, {
             Bukkit.getServer().shutdown()
         }, 20 * 20)
