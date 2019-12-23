@@ -36,6 +36,9 @@ class FlashPlugin : JavaPlugin(), Listener {
 
     val mapVoting by lazy { MapVoting(this.loadMapInfo()) }
     val spawnLocation by lazy {
+        val world = Bukkit.getWorld("spawn")
+        world.setGameRuleValue("doDaylightCycle", "false")
+        world.setWeatherDuration(0)
         Location(Bukkit.getWorld("spawn"), 37.5, 77.0, -82.5, 90.0F, 0.0F);
     }
 
@@ -82,6 +85,7 @@ class FlashPlugin : JavaPlugin(), Listener {
 
     override fun onEnable() {
         this.spawnLocation.chunk.load()
+
 
         this.state = GameState.INIT
         Bukkit.getPluginManager().registerEvents(this, this)
@@ -181,7 +185,6 @@ class FlashPlugin : JavaPlugin(), Listener {
         world.setGameRuleValue("doFireTick", "false")
         world.setGameRuleValue("mobGriefing", "false")
         world.setGameRuleValue("doDaylightCycle", "false")
-
         return world
     }
 
