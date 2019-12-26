@@ -68,6 +68,7 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
         val player = event.player
         player.inventory.clear()
         if (this.plugin.state != GameState.WAITING) {
+            player.activePotionEffects.forEach { player.removePotionEffect(it.type) }
             player.gameMode = GameMode.SPECTATOR
             player.teleport(this.plugin.mapSpawnLocation)
             return
