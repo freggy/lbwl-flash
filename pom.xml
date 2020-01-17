@@ -83,6 +83,26 @@
           </execution>
         </executions>
       </plugin>
+      <plugin>
+        <groupId>io.fabric8</groupId>
+        <artifactId>docker-maven-plugin</artifactId>
+        <version>0.32.0</version>
+        <configuration>
+          <registry>docker.pkg.github.com</registry>
+          <authConfig>
+            <username>${env.GITHUB_USER}</username>
+            <password>${env.GITHUB_PKG_TOKEN}</password>
+          </authConfig>
+          <images>
+            <image>
+              <name>docker.pkg.github.com/luxor-cloud/lbwl-flash/lbwl-flash:${project.version}</name>
+              <build>
+                <dockerFile>docker/Dockerfile.flash</dockerFile>
+              </build>
+            </image>
+          </images>
+        </configuration>
+      </plugin>
     </plugins>
   </build>
 </project>
