@@ -88,15 +88,15 @@
         <artifactId>docker-maven-plugin</artifactId>
         <version>0.32.0</version>
         <configuration>
-          <registry>docker.pkg.github.com</registry>
-          <authConfig>
-            <username>${env.GITHUB_USER}</username>
-            <password>${env.GITHUB_PKG_TOKEN}</password>
-          </authConfig>
+          <!--
+            put the login credentials in /root/.m2/settings.xml
+            for more info see https://dmp.fabric8.io/#registry
+          -->
           <images>
             <image>
               <name>docker.pkg.github.com/luxor-cloud/lbwl-flash/lbwl-flash:${project.version}</name>
               <build>
+                <contextDir>${basedir}</contextDir>
                 <dockerFile>docker/Dockerfile.flash</dockerFile>
               </build>
             </image>
