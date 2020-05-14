@@ -1,7 +1,6 @@
 package cloud.luxor.lbwl.flash.listener
 
 import cloud.luxor.lbwl.flash.*
-import dev.freggy.flash.*
 import cloud.luxor.lbwl.flash.event.PlayerCheckpointEvent
 import cloud.luxor.lbwl.flash.event.PlayerFinishedEvent
 import org.bukkit.Bukkit
@@ -18,7 +17,6 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
-import org.bukkit.plugin.Plugin
 
 class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
