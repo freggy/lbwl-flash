@@ -1,9 +1,9 @@
-package dev.freggy.flash
+package cloud.luxor.lbwl.flash
 
-import dev.freggy.flash.event.PlayerCheckpointEvent
-import dev.freggy.flash.event.PlayerFinishedEvent
-import dev.freggy.flash.listener.CancelListener
-import dev.freggy.flash.listener.PlayerListener
+import cloud.luxor.lbwl.flash.event.PlayerCheckpointEvent
+import cloud.luxor.lbwl.flash.event.PlayerFinishedEvent
+import cloud.luxor.lbwl.flash.listener.CancelListener
+import cloud.luxor.lbwl.flash.listener.PlayerListener
 import org.apache.commons.io.FileUtils
 import org.bukkit.*
 import org.bukkit.command.Command

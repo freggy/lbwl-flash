@@ -1,4 +1,4 @@
-package dev.freggy.flash
+package cloud.luxor.lbwl.flash
 
 import com.google.common.io.ByteStreams
 import org.bukkit.*
@@ -48,7 +48,7 @@ fun Player.respawn() {
 
 fun Player.sendTweetLink(map: String, time: String) {
     val link = createTwitterLink(
-        "§b§l>§r §eTEILE DEINEN REKORD §b§l<", 
+        "§b§l>§r §eTEILE DEINEN REKORD §b§l<",
         "Ich habe einen neuen FLASH-Rekord auf $map erreicht: $time Minuten",
         "FLASHRecords",
         "IntoTheLABS"

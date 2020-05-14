@@ -1,6 +1,6 @@
-package dev.freggy.flash.event
+package cloud.luxor.lbwl.flash.event
 
-import dev.freggy.flash.Checkpoint
+import cloud.luxor.lbwl.flash.Checkpoint
 import org.bukkit.entity.Player
 import org.bukkit.event.HandlerList
 import org.bukkit.event.player.PlayerEvent
