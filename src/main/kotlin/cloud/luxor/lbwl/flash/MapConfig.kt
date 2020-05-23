@@ -1,4 +1,4 @@
-package dev.freggy.flash
+package cloud.luxor.lbwl.flash
 
 import org.bukkit.Location
 import org.bukkit.Material
@@ -35,13 +35,13 @@ class MapConfig(
         // stupid legacy location format
         fun locFromString(s: String, world: World): Location? {
             val split = s.split(",")
-            val values = IntArray(split.size)
-            for (i in split.indices) values[i] = Integer.valueOf(split[i])
+            val values = DoubleArray(split.size)
+            for (i in split.indices) values[i] = split[i].toDouble()
             if (values.size >= 3) {
                 val location =
-                    Location(world, values[0].toDouble(), values[1].toDouble(), values[2].toDouble())
+                    Location(world, values[0], values[1], values[2])
                 if (values.size >= 4) {
-                    location.yaw = values[3] * 90.0f
+                    location.yaw = values[3].toFloat() * 90.0f
                 }
                 return location
             }

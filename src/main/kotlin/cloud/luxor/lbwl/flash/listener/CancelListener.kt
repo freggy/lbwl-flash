@@ -1,6 +1,6 @@
-package dev.freggy.flash.listener
+package cloud.luxor.lbwl.flash.listener
 
-import dev.freggy.flash.FlashPlugin
+import cloud.luxor.lbwl.flash.FlashPlugin
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
@@ -11,7 +11,7 @@ import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason
 import org.bukkit.event.entity.CreatureSpawnEvent
 import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.event.entity.EntityDamageEvent
-import dev.freggy.flash.GameState
+import cloud.luxor.lbwl.flash.GameState
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.*

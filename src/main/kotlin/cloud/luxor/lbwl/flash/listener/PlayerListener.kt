@@ -1,8 +1,8 @@
-package dev.freggy.flash.listener
+package cloud.luxor.lbwl.flash.listener
 
-import dev.freggy.flash.*
-import dev.freggy.flash.event.PlayerCheckpointEvent
-import dev.freggy.flash.event.PlayerFinishedEvent
+import cloud.luxor.lbwl.flash.*
+import cloud.luxor.lbwl.flash.event.PlayerCheckpointEvent
+import cloud.luxor.lbwl.flash.event.PlayerFinishedEvent
 import org.bukkit.Bukkit
 import org.bukkit.GameMode
 import org.bukkit.Material
@@ -17,7 +17,6 @@ import org.bukkit.event.entity.PlayerDeathEvent
 import org.bukkit.event.player.PlayerInteractEvent
 import org.bukkit.event.player.PlayerJoinEvent
 import org.bukkit.event.player.PlayerLoginEvent
-import org.bukkit.plugin.Plugin
 
 class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
@@ -50,7 +49,7 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
         if (number == player.getCurrentCheckPointIndex() + 1) {
             Bukkit.getPluginManager().callEvent(
-                PlayerCheckpointEvent(player, Checkpoint(player.location.clone(), System.currentTimeMillis()))
+                    PlayerCheckpointEvent(player, Checkpoint(player.location.clone(), System.currentTimeMillis()))
             )
             return
         }

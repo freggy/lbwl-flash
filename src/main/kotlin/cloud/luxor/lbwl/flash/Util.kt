@@ -1,4 +1,4 @@
-package dev.freggy.flash
+package cloud.luxor.lbwl.flash
 
 import net.md_5.bungee.api.chat.*
 import org.bukkit.*

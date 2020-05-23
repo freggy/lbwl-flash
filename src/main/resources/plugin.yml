@@ -1,7 +1,7 @@
 name: Flash
 author: freggy
-version: 1.0.0
-main: dev.freggy.flash.FlashPlugin
+version: ${project.version}
+main: cloud.luxor.lbwl.flash.FlashPlugin
 commands:
   lol:
   hub:

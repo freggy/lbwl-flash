@@ -1,4 +1,4 @@
-package dev.freggy.flash
+package cloud.luxor.lbwl.flash
 
 /**
  * @author Yannic Rieger

@@ -1,4 +1,4 @@
-package dev.freggy.flash
+package cloud.luxor.lbwl.flash
 
 import org.bukkit.Bukkit
 import org.bukkit.ChatColor
@@ -25,7 +25,7 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
         // Probably pretty inefficient for sorting by difficulty, but it does the job and 
         // efficiency doesn't really matter in this context.
         // Maps with easy difficulty should be listed first ('e' before 'h') 
-        val sortedMaps = this.maps.sortedWith(compareBy({ it.mode.first() }))
+        val sortedMaps = this.maps.sortedWith(compareBy { it.mode.first() })
         for (i in sortedMaps.indices) {
             val map = sortedMaps[i]
             val votes = votes[map.name] ?: 0

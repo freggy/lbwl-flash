@@ -1,9 +1,9 @@
-package dev.freggy.flash
+package cloud.luxor.lbwl.flash
 
-import dev.freggy.flash.event.PlayerCheckpointEvent
-import dev.freggy.flash.event.PlayerFinishedEvent
-import dev.freggy.flash.listener.CancelListener
-import dev.freggy.flash.listener.PlayerListener
+import cloud.luxor.lbwl.flash.event.PlayerCheckpointEvent
+import cloud.luxor.lbwl.flash.event.PlayerFinishedEvent
+import cloud.luxor.lbwl.flash.listener.CancelListener
+import cloud.luxor.lbwl.flash.listener.PlayerListener
 import org.apache.commons.io.FileUtils
 import org.bukkit.*
 import org.bukkit.command.Command
@@ -38,8 +38,8 @@ class FlashPlugin : JavaPlugin(), Listener {
     val spawnLocation by lazy {
         val world = Bukkit.getWorld("spawn")
         world.setGameRuleValue("doDaylightCycle", "false")
-        world.setWeatherDuration(0)
-        Location(Bukkit.getWorld("spawn"), 37.5, 77.0, -82.5, 90.0F, 0.0F);
+        world.weatherDuration = 0
+        Location(Bukkit.getWorld("spawn"), 0.5, 100.0, 0.5, 90.0F, 0.0F)
     }
 
     var state = GameState.INIT
