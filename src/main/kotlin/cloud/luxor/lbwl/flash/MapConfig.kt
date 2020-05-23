@@ -39,7 +39,7 @@ class MapConfig(
             for (i in split.indices) values[i] = split[i].toDouble()
             if (values.size >= 3) {
                 val location =
-                    Location(world, values[0].toDouble(), values[1].toDouble(), values[2].toDouble())
+                    Location(world, values[0], values[1], values[2])
                 if (values.size >= 4) {
                     location.yaw = values[3].toFloat() * 90.0f
                 }

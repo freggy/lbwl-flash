@@ -39,7 +39,7 @@ class FlashPlugin : JavaPlugin(), Listener {
         val world = Bukkit.getWorld("spawn")
         world.setGameRuleValue("doDaylightCycle", "false")
         world.weatherDuration = 0
-        Location(Bukkit.getWorld("spawn"), 37.5, 77.0, -82.5, 90.0F, 0.0F)
+        Location(Bukkit.getWorld("spawn"), 0.5, 100.0, 0.5, 90.0F, 0.0F)
     }
 
     var state = GameState.INIT
