@@ -1,0 +1,10 @@
+version: "3.9"
+services:
+  flash:
+    container_name: flash
+    build: .
+    ports:
+      - "25565:25565"
+    volumes:
+      - ../target/flash.jar:/opt/spigot/plugins/flash.jar
+      - ../worlds/spawn:/opt/spigot/spawn

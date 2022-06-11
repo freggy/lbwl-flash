@@ -3,6 +3,5 @@ author: freggy
 version: ${project.version}
 main: cloud.luxor.lbwl.flash.FlashPlugin
 commands:
-  lol:
   hub:
     aliases: ["lobby", "l"]
