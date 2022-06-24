@@ -49,8 +49,9 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
 
         if (state !is Furnace) return
 
-        val number = state.customName()?.let { Component.text().append(it) }?.content()?.toInt() ?: -1  //this doesn't work
-
+        val number = state.inventory.contents.sumOf {
+            it?.amount ?: 0
+        }
 
         if (number == player.getCurrentCheckPointIndex() + 1) {
             Bukkit.getPluginManager().callEvent(
