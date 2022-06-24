@@ -1,0 +1,13 @@
+version: "3.9"
+services:
+  flash:
+    container_name: flash
+    build: .
+    ports:
+      - "25565:25565"
+    restart: always
+    volumes:
+      - ../target/flash.jar:/opt/paper/plugins/flash.jar
+      - ../worlds/spawn:/opt/paper/spawn
+      - ../worlds/maps:/opt/paper/plugins/Flash/maps
+      - ../worlds/op:/opt/paper/ops.json

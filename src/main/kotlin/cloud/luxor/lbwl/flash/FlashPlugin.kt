@@ -4,6 +4,7 @@ import cloud.luxor.lbwl.flash.event.PlayerCheckpointEvent
 import cloud.luxor.lbwl.flash.event.PlayerFinishedEvent
 import cloud.luxor.lbwl.flash.listener.CancelListener
 import cloud.luxor.lbwl.flash.listener.PlayerListener
+import net.kyori.adventure.text.Component
 import org.apache.commons.io.FileUtils
 import org.bukkit.*
 import org.bukkit.command.Command
@@ -18,6 +19,7 @@ import java.io.File
 import kotlin.math.max
 
 
+@Suppress("unused") //calls from bukkit
 class FlashPlugin : JavaPlugin(), Listener {
 
     private var playerCheckTask: BukkitTask? = null
@@ -40,8 +42,8 @@ class FlashPlugin : JavaPlugin(), Listener {
             ?: WorldCreator("spawn")
                 .generateStructures(false)
                 .createWorld()
-        world.setGameRuleValue("doDaylightCycle", "false")
-        world.weatherDuration = 0
+        world?.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
+        world?.weatherDuration = 0
         Location(Bukkit.getWorld("spawn"), 0.5, 100.0, 0.5, 90.0F, 0.0F)
     }
 
@@ -53,12 +55,12 @@ class FlashPlugin : JavaPlugin(), Listener {
 
     private fun startWaitingPhase() {
         var counter = 0
-        this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, {
+        this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, Runnable runTaskTimer@{
             val currentPlayers = Bukkit.getOnlinePlayers().size
             val needed = max(minPlayers - currentPlayers, 0)
 
             counter++
-            if (counter % 5 == 0) Bukkit.broadcastMessage("$PREFIX §7Noch benötigte Spieler: §b$needed")
+            if (counter % 5 == 0) Bukkit.broadcast(Component.text("$PREFIX §7Noch benötigte Spieler: §b$needed"))
 
             if (currentPlayers < this.minPlayers) {
                 this.lobbyTime = 20
@@ -68,7 +70,7 @@ class FlashPlugin : JavaPlugin(), Listener {
 
             if (currentPlayers >= this.minPlayers) {
                 if (this.lobbyTimerTask != null) return@runTaskTimer
-                this.lobbyTimerTask = Bukkit.getScheduler().runTaskTimer(this, {
+                this.lobbyTimerTask = Bukkit.getScheduler().runTaskTimer(this, Runnable {
                     this.lobbyTime--
                     Bukkit.getOnlinePlayers().forEach { player -> player.level = this.lobbyTime }
                     if (this.lobbyTime <= 0) {
@@ -81,7 +83,7 @@ class FlashPlugin : JavaPlugin(), Listener {
 
             if (currentPlayers >= this.maxPlayers) {
                 this.lobbyTime = 10
-                Bukkit.broadcastMessage("Zeit wird auf $lobbyTime Sekunden verkürzt.")
+                Bukkit.broadcast(Component.text("Zeit wird auf $lobbyTime Sekunden verkürzt."))
             }
         }, 20L, 20L)
     }
@@ -100,14 +102,15 @@ class FlashPlugin : JavaPlugin(), Listener {
         this.state = GameState.WAITING
     }
 
+
     override fun onCommand(
-        sender: CommandSender?,
-        command: Command?,
-        label: String?,
-        args: Array<out String>?
+        sender: CommandSender,
+        command: Command,
+        label: String,
+        args: Array<out String>
     ): Boolean {
         if (sender !is Player) return false
-        if (label.equals("lol")) {
+        if (label == "lol") {
             sender.activePotionEffects.forEach {
                 sender.sendMessage(it.toString())
             }
@@ -122,8 +125,8 @@ class FlashPlugin : JavaPlugin(), Listener {
         this.mapConfig = map
         this.mapVoting.end()
 
-        Bukkit.broadcastMessage("$PREFIX §aDie Mapabstimmung ist beendet!")
-        Bukkit.broadcastMessage("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.builder} §7gespielt!")
+        Bukkit.broadcast(Component.text("$PREFIX §aDie Mapabstimmung ist beendet!"))
+        Bukkit.broadcast(Component.text("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.builder} §7gespielt!"))
 
         val world = this.loadMap(map)
         this.scoreboard.startDisplay()
@@ -138,13 +141,13 @@ class FlashPlugin : JavaPlugin(), Listener {
             it.allowFlight = false
             it.applyEffects()
             it.giveItems()
-            it.teleport(this.mapSpawnLocation)
+            it.teleport(this.mapSpawnLocation!!)
         }
 
         this.startTime = System.currentTimeMillis()
 
         this.state = GameState.RUNNING
-        this.gamerTimerTask = Bukkit.getScheduler().runTaskTimer(this, {
+        this.gamerTimerTask = Bukkit.getScheduler().runTaskTimer(this, Runnable runTaskTimer@{
             roundTime--
             val format = String.format("%02d:%02d", roundTime / 60, roundTime % 60)
             this.scoreboard.updateTitle(format)
@@ -164,15 +167,15 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     private fun stop() {
-        Bukkit.broadcastMessage("§cDer Server stoppt in 20 Sekunden.")
+        Bukkit.broadcast(Component.text("§cDer Server stoppt in 20 Sekunden."))
         this.state = GameState.FINISHING
 
         // Teleport players 5 seconds earlier to lobby just to be sure
-        Bukkit.getScheduler().runTaskLater(this, {
+        Bukkit.getScheduler().runTaskLater(this, Runnable {
             Bukkit.getOnlinePlayers().forEach { it.connectToLobby(this) }
         }, 20 * 15)
 
-        Bukkit.getScheduler().runTaskLater(this, {
+        Bukkit.getScheduler().runTaskLater(this, Runnable {
             Bukkit.getServer().shutdown()
         }, 20 * 20)
     }
@@ -185,7 +188,7 @@ class FlashPlugin : JavaPlugin(), Listener {
             ?.map { MapConfig.read(it) }
             ?.toList()
             ?: throw Exception("no maps found")
-            //?: listOf() //return empty list if anything fails
+        //?: listOf() //return empty list if anything fails
     }
 
     private fun loadMap(config: MapConfig): World {
@@ -195,10 +198,10 @@ class FlashPlugin : JavaPlugin(), Listener {
             .environment(World.Environment.NORMAL)
             .createWorld()
 
-        world.setGameRuleValue("doFireTick", "false")
-        world.setGameRuleValue("mobGriefing", "false")
-        world.setGameRuleValue("doDaylightCycle", "false")
-        return world
+        world?.setGameRule(GameRule.DO_FIRE_TICK, false)
+        world?.setGameRule(GameRule.MOB_GRIEFING, false)
+        world?.setGameRule(GameRule.DO_DAYLIGHT_CYCLE, false)
+        return world ?: throw Exception("could not load world of config: $config")
     }
 
     @EventHandler
@@ -208,7 +211,7 @@ class FlashPlugin : JavaPlugin(), Listener {
         player.applyEffects()
 
         val index = player.getCurrentCheckPointIndex()
-        player.playSound(player.location, Sound.LEVEL_UP, 1.0F, 1.0F)
+        player.playSound(player.location, Sound.ENTITY_PLAYER_LEVELUP, 1.0F, 1.0F)
         player.sendMessage("$PREFIX §7Du hast einen Checkpoint erreicht! §b[${index}/${mapConfig?.checkpoints}]")
 
         Bukkit.getOnlinePlayers()
@@ -227,7 +230,9 @@ class FlashPlugin : JavaPlugin(), Listener {
         // the player cannot use the teleport functionality
         Bukkit.getOnlinePlayers()
             .filter { it != player }
-            .forEach { player.showPlayer(it) }
+            .forEach {
+                player.showPlayer(this, it)
+            }
 
         val needed = event.finished - startTime
         val minutes = needed / (1000 * 60)
@@ -238,8 +243,8 @@ class FlashPlugin : JavaPlugin(), Listener {
         player.sendMessage("$PREFIX §7Du hast insgesamt §b$formatted §7benötigt.")
         player.sendTweetLink(this.mapConfig!!.name, formatted)
 
-        Bukkit.broadcastMessage("$PREFIX §a${event.player.name} §bhat das Ziel erreicht.")
-        Bukkit.getOnlinePlayers().forEach { it.playSound(it.location, Sound.ENDERDRAGON_GROWL, 1f, 1f) }
+        Bukkit.broadcast(Component.text("$PREFIX §a${event.player.name} §bhat das Ziel erreicht."))
+        Bukkit.getOnlinePlayers().forEach { it.playSound(it.location, Sound.ENTITY_ENDER_DRAGON_GROWL, 1f, 1f) }
     }
 
     @EventHandler

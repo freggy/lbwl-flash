@@ -13,7 +13,7 @@ private val gameData = WeakHashMap<Player, GameData>()
 
 val HIDE_PLAYER_ITEM = create(Material.BLAZE_ROD, 0, "§c§lSpieler verstecken §r§7§o<Rechtsklick>")
 val SHOW_PLAYER_ITEM = create(Material.STICK, 0, "§c§lSpieler anzeigen §r§7§o<Rechtsklick>")
-val RESPAWN_ITEM = create(Material.INK_SACK, 1, "§c§lInstant-Tod(TM) §r§7§o<Rechtsklick>")
+val RESPAWN_ITEM = create(Material.INK_SAC, 1, "§c§lInstant-Tod(TM) §r§7§o<Rechtsklick>")
 
 fun Player.initGameData(speed: Int, spawn: Location) {
     gameData[player] = GameData(mutableSetOf(), speed, spawn)
@@ -34,12 +34,12 @@ fun Player.respawn() {
     this.applyEffects()
 
     if (gameData[player]!!.checkpoints.isEmpty()) {
-        this.teleport(gameData[player]?.spawn)
+        gameData[player]?.spawn?.let { this.teleport(it) }
     } else {
-        this.teleport(this.getCurrentCheckPointLocation())
+        this.getCurrentCheckPointLocation()?.let { this.teleport(it) }
     }
 
-    this.playSound(this.location, Sound.ENDERMAN_TELEPORT, 1.0F, 1.0F)
+    this.playSound(this.location, Sound.ENTITY_ENDERMAN_TELEPORT, 1.0F, 1.0F)
 
     this.health = 20.0
     this.fireTicks = 0
@@ -53,7 +53,7 @@ fun Player.sendTweetLink(map: String, time: String) {
         "FLASHRecords",
         "IntoTheLABS"
     )
-    this.spigot().sendMessage(*link)
+    this.sendMessage(link)
 }
 
 fun Player.applyEffects() {
@@ -62,21 +62,21 @@ fun Player.applyEffects() {
     this.addPotionEffect(PotionEffect(PotionEffectType.SPEED, Integer.MAX_VALUE, gameData[player]?.mapSpeed ?: 19 ))
 }
 
-fun Player.toggleVisibility() {
-    if (this.inventory.getItem(5).type == Material.BLAZE_ROD) {
+fun Player.toggleVisibility(plugin: Plugin) {
+    if (this.inventory.getItem(5)?.type == Material.BLAZE_ROD) {
         this.sendMessage("$PREFIX §7Du hast alle Spieler §cversteckt§7.")
-        this.playSound(this.location, Sound.NOTE_PLING, 1.0F, 1.0F)
+        this.playSound(this.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F)
         this.inventory.setItem(5, SHOW_PLAYER_ITEM)
         Bukkit.getOnlinePlayers()
             .filter { it != this }
-            .forEach { this.hidePlayer(it) }
+            .forEach { this.hidePlayer(plugin, it) }
     } else {
         this.inventory.setItem(5, HIDE_PLAYER_ITEM)
-        player.sendMessage("$PREFIX §7Du §asiehst §7nun alle Spieler§7.")
-        player.playSound(player.location, Sound.NOTE_PLING, 1.0F, 1.0F)
+        player?.sendMessage("$PREFIX §7Du §asiehst §7nun alle Spieler§7.")
+        player?.let { it.playSound(it.location, Sound.BLOCK_NOTE_BLOCK_PLING, 1.0F, 1.0F) }
         Bukkit.getOnlinePlayers()
             .filter { it != player }
-            .forEach { player.showPlayer(it) }
+            .forEach { player?.showPlayer(plugin, it) }
     }
 }
 

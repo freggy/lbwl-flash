@@ -4,7 +4,6 @@ import cloud.luxor.lbwl.flash.FlashPlugin
 import org.bukkit.event.Listener
 import org.bukkit.event.player.PlayerInteractAtEntityEvent
 import org.bukkit.event.player.PlayerInteractEntityEvent
-import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.player.PlayerDropItemEvent
 import org.bukkit.event.inventory.InventoryClickEvent
 import org.bukkit.event.entity.CreatureSpawnEvent.SpawnReason
@@ -16,6 +15,7 @@ import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.*
 import org.bukkit.event.player.PlayerInteractEvent
+import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.weather.WeatherChangeEvent
 
 
@@ -23,6 +23,7 @@ import org.bukkit.event.weather.WeatherChangeEvent
 /**
  * @author Yannic Rieger
  */
+@Suppress("unused")
 class CancelListener(val flash: FlashPlugin) : Listener {
     @EventHandler
     fun on(e: WeatherChangeEvent) {

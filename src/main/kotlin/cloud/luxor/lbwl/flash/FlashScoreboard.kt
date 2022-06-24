@@ -1,27 +1,23 @@
 package cloud.luxor.lbwl.flash
 
+import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
 import org.bukkit.scoreboard.DisplaySlot
 
-import org.bukkit.scoreboard.Objective
-
-
-
 
 /**
  * @author Yannic Rieger
  */
-class FlashScoreboard(val plugin: FlashPlugin) {
+class FlashScoreboard(private val plugin: FlashPlugin) {
 
     private val handle = Bukkit.getScoreboardManager().newScoreboard
     private var task: BukkitTask? = null
 
     init {
-        val obj = handle.registerNewObjective("scoreboard", "dummy")
+        val obj = handle.registerNewObjective("scoreboard", "dummy", Component.text("§e>> §6Flash"))
         obj.displaySlot = DisplaySlot.SIDEBAR
-        obj.displayName = "§e>> §6Flash"
         obj.getScore("§e§lServer-IP:").score = 999
         obj.getScore("§fbergwerkLABS.de").score = 998
         obj.getScore("§1§2§3").score = 997
@@ -30,11 +26,11 @@ class FlashScoreboard(val plugin: FlashPlugin) {
 
     fun startDisplay() {
         val obj = handle.getObjective("scoreboard")
-        task = Bukkit.getScheduler().runTaskTimer(plugin, {
+        task = Bukkit.getScheduler().runTaskTimer(plugin, Runnable {
             Bukkit.getOnlinePlayers()
                 .filter { it.isIngame() }
                 .forEach {
-                    obj.getScore(it.displayName).score = it.getCurrentCheckPointIndex()
+                    obj?.getScore(it.name)?.score = it.getCurrentCheckPointIndex()
                 }
         }, 0, 10)
     }
@@ -44,11 +40,11 @@ class FlashScoreboard(val plugin: FlashPlugin) {
     }
 
     fun updateTitle(title: String) {
-        handle.getObjective("scoreboard").displayName = "$PREFIX §b$title"
+        handle.getObjective("scoreboard")?.displayName = "$PREFIX §b$title"
     }
 
     fun destroy() {
         this.task?.cancel()
-        Bukkit.getOnlinePlayers().forEach { it.scoreboard = null }
+        Bukkit.getOnlinePlayers().forEach { it.scoreboard = Bukkit.getScoreboardManager().newScoreboard }
     }
 }
