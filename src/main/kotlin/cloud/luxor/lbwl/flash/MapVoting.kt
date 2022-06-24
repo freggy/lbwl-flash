@@ -1,8 +1,11 @@
 package cloud.luxor.lbwl.flash
 
+import com.google.gson.Gson
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.format.Style
+import net.kyori.adventure.text.format.TextColor
+import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.Bukkit
-import org.bukkit.ChatColor
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
 import org.bukkit.event.Listener
@@ -11,6 +14,7 @@ import org.bukkit.event.player.PlayerQuitEvent
 import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
+import java.awt.Color
 
 
 /**
@@ -30,14 +34,23 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
         val sortedMaps = this.maps.sortedWith(compareBy { it.mode.first() })
         sortedMaps.forEachIndexed { index, mapConfig ->
             val stack = ItemStack(mapConfig.item, votes[mapConfig.name] ?: 1)   //0 is forbidden in 1.19
-            stack.itemMeta.displayName(Component.text(mapConfig.name))  //this does not work properly
-            //stack.itemMeta.displayName(Component.text(if (mapConfig.mode == "easy") "§a${mapConfig.name}" else "§c${mapConfig.name}"))
-            stack.itemMeta.lore(listOf(Component.text("§eErbauer: §b${mapConfig.builder}")))
+            val meta = stack.itemMeta
+            val displayColor = if (mapConfig.mode == "easy") Color.GREEN.rgb else Color.RED.rgb
+            meta.displayName(
+                Component
+                    .text(mapConfig.name.replace("-", " "))
+                    .style(Style.style(TextColor.color(displayColor)))
+            )
+            meta.lore(
+                listOf(
+                    Component
+                        .text("Erbauer: §b${mapConfig.builder}")
+                        .style(Style.style(TextColor.color(Color.YELLOW.rgb)))
+                )
+            )
+            stack.itemMeta = meta
             inventory.setItem(index, stack)
-            println("[Flash] Debug: Set ${stack.type.name} on index $index")
-            println("[Flash] Debug was considered item: ${mapConfig.item.isItem}")
         }
-        println("[Flash] Debug: " + inventory.contents[0]?.type?.name + " is empty? " + inventory.isEmpty)
     }
 
     init {
@@ -75,7 +88,7 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
 
         // find the map with the highest votes
         val name = this.votes.toList().maxBy { (_, value) -> value }
-        return this.maps.find { config -> name.first == config.name }!!
+        return this.maps.find { config -> name.first.contains(config.name) }!!
     }
 
     @EventHandler
@@ -86,10 +99,13 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
         if (event.currentItem!!.itemMeta == null) return
 
         event.isCancelled = true
-        val mapName = ChatColor.stripColor(
-            Component.text().append(event.currentItem?.itemMeta?.displayName() ?: Component.text("")).content()
-        )
-        mapName?.let { this.vote(event.whoClicked as Player, it) }
+
+        //ugly af but I really don't know how to access the displayName as a String
+        val mapName = event.currentItem?.itemMeta?.displayName()
+        val str = mapName?.let { GsonComponentSerializer.gson().serialize(it) } ?: ""
+        val serName: MapName = Gson().fromJson(str, MapName::class.java)
+
+        mapName.let { this.vote(event.whoClicked as Player, serName.text) }
     }
 
     @EventHandler
@@ -107,3 +123,5 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
         InventoryClickEvent.getHandlerList().unregister(this)
     }
 }
+
+data class MapName(val text: String)

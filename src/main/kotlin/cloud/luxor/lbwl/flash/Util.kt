@@ -2,7 +2,6 @@ package cloud.luxor.lbwl.flash
 
 import net.kyori.adventure.text.Component
 import net.kyori.adventure.text.TextComponent
-import net.md_5.bungee.api.chat.*
 import org.bukkit.*
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
