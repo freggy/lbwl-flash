@@ -37,6 +37,9 @@ class FlashPlugin : JavaPlugin(), Listener {
     val mapVoting by lazy { MapVoting(this.loadMapInfo()) }
     val spawnLocation by lazy {
         val world = Bukkit.getWorld("spawn")
+            ?: WorldCreator("spawn")
+                .generateStructures(false)
+                .createWorld()
         world.setGameRuleValue("doDaylightCycle", "false")
         world.weatherDuration = 0
         Location(Bukkit.getWorld("spawn"), 0.5, 100.0, 0.5, 90.0F, 0.0F)
@@ -177,10 +180,12 @@ class FlashPlugin : JavaPlugin(), Listener {
     private fun loadMapInfo(): List<MapConfig> {
         val file = File(this.dataFolder, "maps")
         return file.listFiles()
-            .filter { it.isDirectory }
-            .map { File(it.absolutePath, "mapconfig.yml") }
-            .map { MapConfig.read(it) }
-            .toList()
+            ?.filter { it.isDirectory }
+            ?.map { File(it.absolutePath, "mapconfig.yml") }
+            ?.map { MapConfig.read(it) }
+            ?.toList()
+            ?: throw Exception("no maps found")
+            //?: listOf() //return empty list if anything fails
     }
 
     private fun loadMap(config: MapConfig): World {

@@ -6,5 +6,7 @@ services:
     ports:
       - "25565:25565"
     volumes:
+      - ../worlds/server.properties:/opt/spigot/server.properties
       - ../target/flash.jar:/opt/spigot/plugins/flash.jar
       - ../worlds/spawn:/opt/spigot/spawn
+      - ../worlds/maps:/opt/spigot/plugins/Flash/maps
