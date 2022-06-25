@@ -21,14 +21,14 @@ class MapConfig(
         fun read(file: File): MapConfig {
             val yaml = YamlConfiguration.loadConfiguration(file)
             return MapConfig(
-                yaml.getString("name"),
+                yaml.getString("name") ?: "null",
                 yaml.getInt("checkpoints"),
                 yaml.getString("author").orEmpty(),
                 yaml.getInt("time"),
-                yaml.getString("mode"),
+                yaml.getString("mode") ?: "easy",
                 yaml.getInt("speedLevel"),
-                Material.valueOf(yaml.getString("item")?.toUpperCase() ?: "STONE"),
-                yaml.getString("spawn")
+                Material.valueOf(yaml.getString("item")?.uppercase() ?: "STONE"),
+                yaml.getString("spawn") ?: "0,0,0,0"
             )
         }
 

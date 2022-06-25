@@ -1,13 +1,15 @@
 package cloud.luxor.lbwl.flash
 
-import net.md_5.bungee.api.chat.*
+import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
 import org.bukkit.*
 import org.bukkit.entity.EntityType
 import org.bukkit.entity.Firework
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.*
-
+import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.event.HoverEvent
 
 /**
  * @author Yannic Rieger
@@ -16,14 +18,14 @@ import java.util.*
 const val PREFIX = "§6>> §eFlash §6|"
 
 fun create(material: Material, data: Short, name: String): ItemStack {
-    val item = ItemStack(material, 1, data)
+    val item = ItemStack(material, 1)
     val meta = item.itemMeta
-    meta.displayName = name
+    meta.displayName(Component.text(name))
     item.itemMeta = meta
     return item
 }
 
-fun createTwitterLink(click: String, tweet: String, vararg hashtags: String): Array<BaseComponent>  {
+fun createTwitterLink(click: String, tweet: String, vararg hashtags: String): TextComponent {
     val url = StringBuilder()
     url.append("http://twitter.com/intent/tweet?text=")
     url.append(tweet)
@@ -36,17 +38,18 @@ fun createTwitterLink(click: String, tweet: String, vararg hashtags: String): Ar
             }
         }
     }
-    val builder = ComponentBuilder(" $click")
-        .event(ClickEvent(ClickEvent.Action.OPEN_URL, url.toString().replace(" ", "%20")))
-        .event(HoverEvent(HoverEvent.Action.SHOW_TEXT, TextComponent.fromLegacyText("§7Öffnet ein Fenster zu Twitter.")));
-    return builder.create();
+    return Component.text(" $click").clickEvent(
+        ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url.toString().replace(" ", "%20"))
+    ).hoverEvent(
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("§7Öffnet ein Fenster zu Twitter."))
+    )
 }
 
 fun spawnRandomFirework(plugin: Plugin, loc: Location) {
     val fw = loc.world.spawnEntity(loc, EntityType.FIREWORK) as Firework
     val fwm = fw.fireworkMeta
     val r = Random()
-    val rt: Int = r.nextInt(4) + 1
+    val rt: Int = r.nextInt(5) + 1
     var type = FireworkEffect.Type.BALL
     if (rt == 1) type = FireworkEffect.Type.BALL
     if (rt == 2) type = FireworkEffect.Type.BALL_LARGE
@@ -55,8 +58,8 @@ fun spawnRandomFirework(plugin: Plugin, loc: Location) {
     if (rt == 5) type = FireworkEffect.Type.STAR
     val r1i: Int = r.nextInt(17) + 1
     val r2i: Int = r.nextInt(17) + 1
-    val c1: Color? = getColor(r1i)
-    val c2: Color? = getColor(r2i)
+    val c1: Color = getColor(r1i)
+    val c2: Color = getColor(r2i)
     val effect: FireworkEffect = FireworkEffect.builder()
         .flicker(r.nextBoolean())
         .withColor(c1)
@@ -69,11 +72,11 @@ fun spawnRandomFirework(plugin: Plugin, loc: Location) {
     fwm.power = rp
     fw.fireworkMeta = fwm
 
-    Bukkit.getScheduler().runTaskLater(plugin, { fw.detonate() }, 10)
+    Bukkit.getScheduler().runTaskLater(plugin, Runnable { fw.detonate() }, 10)
 }
 
-private fun getColor(i: Int): Color? {
-    var c: Color? = null
+private fun getColor(i: Int): Color {
+    var c: Color = Color.AQUA
     if (i == 1) c = Color.AQUA
     if (i == 2) c = Color.BLACK
     if (i == 3) c = Color.BLUE
