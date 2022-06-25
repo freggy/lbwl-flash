@@ -98,7 +98,7 @@ class PlayerListener(private val plugin: FlashPlugin) : Listener {
         val type = event.item!!.type
         val player = event.player
 
-        if (type == Material.INK_SAC) {
+        if (type == Material.RED_DYE) {
             player.respawn()
             return
         }

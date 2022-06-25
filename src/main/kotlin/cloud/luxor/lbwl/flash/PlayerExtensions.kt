@@ -13,7 +13,7 @@ private val gameData = WeakHashMap<Player, GameData>()
 
 val HIDE_PLAYER_ITEM = create(Material.BLAZE_ROD, 0, "§c§lSpieler verstecken §r§7§o<Rechtsklick>")
 val SHOW_PLAYER_ITEM = create(Material.STICK, 0, "§c§lSpieler anzeigen §r§7§o<Rechtsklick>")
-val RESPAWN_ITEM = create(Material.INK_SAC, 1, "§c§lInstant-Tod(TM) §r§7§o<Rechtsklick>")
+val RESPAWN_ITEM = create(Material.RED_DYE, 1, "§c§lInstant-Tod(TM) §r§7§o<Rechtsklick>")
 
 fun Player.initGameData(speed: Int, spawn: Location) {
     gameData[player] = GameData(mutableSetOf(), speed, spawn)
