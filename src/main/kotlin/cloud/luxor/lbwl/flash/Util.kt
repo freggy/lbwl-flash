@@ -8,7 +8,8 @@ import org.bukkit.entity.Firework
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.util.*
-
+import net.kyori.adventure.text.event.ClickEvent
+import net.kyori.adventure.text.event.HoverEvent
 
 /**
  * @author Yannic Rieger
@@ -38,9 +39,9 @@ fun createTwitterLink(click: String, tweet: String, vararg hashtags: String): Te
         }
     }
     return Component.text(" $click").clickEvent(
-        net.kyori.adventure.text.event.ClickEvent.clickEvent(net.kyori.adventure.text.event.ClickEvent.Action.OPEN_URL, url.toString().replace(" ", "%20"))
+        ClickEvent.clickEvent(ClickEvent.Action.OPEN_URL, url.toString().replace(" ", "%20"))
     ).hoverEvent(
-        net.kyori.adventure.text.event.HoverEvent.hoverEvent(net.kyori.adventure.text.event.HoverEvent.Action.SHOW_TEXT, Component.text("§7Öffnet ein Fenster zu Twitter."))
+        HoverEvent.hoverEvent(HoverEvent.Action.SHOW_TEXT, Component.text("§7Öffnet ein Fenster zu Twitter."))
     )
 }
 
