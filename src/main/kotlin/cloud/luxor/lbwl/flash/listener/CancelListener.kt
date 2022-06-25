@@ -49,7 +49,9 @@ class CancelListener(val flash: FlashPlugin) : Listener {
     fun on(e: EntityDamageEvent) {
         if (this.flash.state == GameState.WAITING
             || this.flash.state == GameState.FINISHING
-            || e.entityType != EntityType.PLAYER) {
+            || e.entityType != EntityType.PLAYER
+            || e.cause == EntityDamageEvent.DamageCause.ENTITY_EXPLOSION    //disable firework damage
+        ) {
             e.isCancelled = true
         }
     }
