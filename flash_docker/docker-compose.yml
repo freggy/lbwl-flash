@@ -8,6 +8,5 @@ services:
     restart: always
     volumes:
       - ../target/flash.jar:/opt/paper/plugins/flash.jar
-      - ../worlds/spawn:/opt/paper/spawn
-      - ../worlds/maps:/opt/paper/plugins/Flash/maps
-      - ../worlds/op:/opt/paper/ops.json
+      - ../maps/spawn:/opt/paper/spawn
+      - ../worlds:/opt/paper/plugins/Flash/maps
