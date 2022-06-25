@@ -1,10 +1,9 @@
 package cloud.luxor.lbwl.flash
 
-import com.google.gson.Gson
 import net.kyori.adventure.text.Component
+import net.kyori.adventure.text.TextComponent
 import net.kyori.adventure.text.format.Style
 import net.kyori.adventure.text.format.TextColor
-import net.kyori.adventure.text.serializer.gson.GsonComponentSerializer
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.event.EventHandler
@@ -15,7 +14,6 @@ import org.bukkit.inventory.Inventory
 import org.bukkit.inventory.ItemStack
 import org.bukkit.plugin.Plugin
 import java.awt.Color
-
 
 /**
  * @author Yannic Rieger
@@ -100,12 +98,8 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
 
         event.isCancelled = true
 
-        //ugly af but I really don't know how to access the displayName as a String
-        val mapName = event.currentItem?.itemMeta?.displayName()
-        val str = mapName?.let { GsonComponentSerializer.gson().serialize(it) } ?: ""
-        val serName: MapName = Gson().fromJson(str, MapName::class.java)
-
-        mapName.let { this.vote(event.whoClicked as Player, serName.text) }
+        val name = event.currentItem?.itemMeta?.displayName() as TextComponent
+        name.let { this.vote(event.whoClicked as Player, it.content()) }
     }
 
     @EventHandler
@@ -123,5 +117,3 @@ class MapVoting(private val maps: List<MapConfig>) : Listener {
         InventoryClickEvent.getHandlerList().unregister(this)
     }
 }
-
-data class MapName(val text: String)
