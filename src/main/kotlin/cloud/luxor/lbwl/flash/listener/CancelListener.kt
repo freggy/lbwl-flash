@@ -14,8 +14,8 @@ import cloud.luxor.lbwl.flash.GameState
 import org.bukkit.entity.EntityType
 import org.bukkit.event.EventHandler
 import org.bukkit.event.block.*
+import org.bukkit.event.player.PlayerAttemptPickupItemEvent
 import org.bukkit.event.player.PlayerInteractEvent
-import org.bukkit.event.player.PlayerPickupItemEvent
 import org.bukkit.event.weather.WeatherChangeEvent
 
 
@@ -89,7 +89,7 @@ class CancelListener(val flash: FlashPlugin) : Listener {
     }
 
     @EventHandler
-    fun on(e: PlayerPickupItemEvent) {
+    fun on(e: PlayerAttemptPickupItemEvent) {
         e.isCancelled = true
     }
 
