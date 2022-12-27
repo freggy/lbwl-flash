@@ -16,6 +16,7 @@ import org.bukkit.event.entity.FoodLevelChangeEvent
 import org.bukkit.plugin.java.JavaPlugin
 import org.bukkit.scheduler.BukkitTask
 import java.io.File
+import java.util.logging.Level
 import kotlin.math.max
 
 
@@ -121,14 +122,14 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     private fun startGame() {
-        val map = this.mapVoting.determineMap()
+        val (map, mapDir) = this.mapVoting.determineMap()
         this.mapConfig = map
         this.mapVoting.end()
 
         Bukkit.broadcast(Component.text("$PREFIX §aDie Mapabstimmung ist beendet!"))
         Bukkit.broadcast(Component.text("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.builder} §7gespielt!"))
 
-        val world = this.loadMap(map)
+        val world = this.loadMap(map, mapDir)
         this.scoreboard.startDisplay()
 
         this.mapSpawnLocation = MapConfig.locFromString(map.spawnString, world)
@@ -180,20 +181,22 @@ class FlashPlugin : JavaPlugin(), Listener {
         }, 20 * 20)
     }
 
-    private fun loadMapInfo(): List<MapConfig> {
+    private fun loadMapInfo(): List<Pair<MapConfig, File>> {
         val file = File(this.dataFolder, "maps")
         return file.listFiles()
             ?.filter { it.isDirectory }
             ?.map { File(it.absolutePath, "mapconfig.yml") }
-            ?.map { MapConfig.read(it) }
+            ?.map { MapConfig.read(it) to it.parentFile }
             ?.toList()
             ?: throw Exception("no maps found")
-        //?: listOf() //return empty list if anything fails
     }
 
-    private fun loadMap(config: MapConfig): World {
-        FileUtils.copyDirectory(File("${this.dataFolder}/maps/${config.name}"), File(config.name))
-        val world = WorldCreator(config.name)
+    private fun loadMap(config: MapConfig, mapDir: File): World {
+        val worldName = config.name.trim().lowercase()
+        this.logger.log(Level.INFO, "Copying '${mapDir.name}' to '$worldName'!")
+
+        mapDir.copyRecursively(File(worldName))
+        val world = WorldCreator(worldName)
             .generateStructures(false)
             .environment(World.Environment.NORMAL)
             .createWorld()

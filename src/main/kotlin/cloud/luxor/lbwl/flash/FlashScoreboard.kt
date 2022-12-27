@@ -4,6 +4,7 @@ import net.kyori.adventure.text.Component
 import org.bukkit.Bukkit
 import org.bukkit.entity.Player
 import org.bukkit.scheduler.BukkitTask
+import org.bukkit.scoreboard.Criteria
 import org.bukkit.scoreboard.DisplaySlot
 
 
@@ -16,7 +17,7 @@ class FlashScoreboard(private val plugin: FlashPlugin) {
     private var task: BukkitTask? = null
 
     init {
-        val obj = handle.registerNewObjective("scoreboard", "dummy", Component.text("§e>> §6Flash"))
+        val obj = handle.registerNewObjective("scoreboard", Criteria.DUMMY, Component.text("§e>> §6Flash"))
         obj.displaySlot = DisplaySlot.SIDEBAR
         obj.getScore("§e§lServer-IP:").score = 999
         obj.getScore("§fbergwerkLABS.de").score = 998
@@ -40,7 +41,7 @@ class FlashScoreboard(private val plugin: FlashPlugin) {
     }
 
     fun updateTitle(title: String) {
-        handle.getObjective("scoreboard")?.displayName = "$PREFIX §b$title"
+        handle.getObjective("scoreboard")?.displayName(Component.text("$PREFIX §b$title"))
     }
 
     fun destroy() {
