@@ -2,7 +2,7 @@ FROM openjdk:17-alpine
 
 EXPOSE 25565
 WORKDIR /opt/paper
-ADD https://api.papermc.io/v2/projects/paper/versions/1.19/builds/36/downloads/paper-1.19-36.jar paper.jar
+ADD https://api.papermc.io/v2/projects/paper/versions/1.19.3/builds/363/downloads/paper-1.19.3-363.jar paper.jar
 
 RUN apk --update add --no-cache ca-certificates
 
