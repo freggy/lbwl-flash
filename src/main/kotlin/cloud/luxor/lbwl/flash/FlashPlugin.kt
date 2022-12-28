@@ -195,7 +195,7 @@ class FlashPlugin : JavaPlugin(), Listener {
         val worldName = config.name.trim().lowercase()
         this.logger.log(Level.INFO, "Copying '${mapDir.name}' to '$worldName'!")
 
-        mapDir.copyRecursively(File(worldName))
+        mapDir.copyRecursively(File(worldName), true)
         val world = WorldCreator(worldName)
             .generateStructures(false)
             .environment(World.Environment.NORMAL)
