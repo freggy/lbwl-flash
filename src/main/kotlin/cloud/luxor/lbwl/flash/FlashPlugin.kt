@@ -5,7 +5,6 @@ import cloud.luxor.lbwl.flash.event.PlayerFinishedEvent
 import cloud.luxor.lbwl.flash.listener.CancelListener
 import cloud.luxor.lbwl.flash.listener.PlayerListener
 import net.kyori.adventure.text.Component
-import org.apache.commons.io.FileUtils
 import org.bukkit.*
 import org.bukkit.command.Command
 import org.bukkit.command.CommandSender
@@ -58,18 +57,21 @@ class FlashPlugin : JavaPlugin(), Listener {
         var counter = 0
         this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, Runnable runTaskTimer@{
             val currentPlayers = Bukkit.getOnlinePlayers().size
+            if(currentPlayers == 0)
+                return@runTaskTimer
+
             val needed = max(minPlayers - currentPlayers, 0)
-
             counter++
-            if (counter % 5 == 0) Bukkit.broadcast(Component.text("$PREFIX §7Noch benötigte Spieler: §b$needed"))
 
-            if (currentPlayers < this.minPlayers) {
+            if (needed > 0) {
+                if (counter % 5 == 0) {
+                    Bukkit.broadcast(Component.text("$PREFIX §7Noch benötigte Spieler: §b$needed"))
+                }
+
                 this.lobbyTime = 20
                 lobbyTimerTask?.cancel()
                 lobbyTimerTask = null
-            }
-
-            if (currentPlayers >= this.minPlayers) {
+            } else {
                 if (this.lobbyTimerTask != null) return@runTaskTimer
                 this.lobbyTimerTask = Bukkit.getScheduler().runTaskTimer(this, Runnable {
                     this.lobbyTime--
