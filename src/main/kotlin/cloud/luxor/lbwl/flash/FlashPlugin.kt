@@ -57,7 +57,7 @@ class FlashPlugin : JavaPlugin(), Listener {
         var counter = 0
         this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, Runnable runTaskTimer@{
             val currentPlayers = Bukkit.getOnlinePlayers().size
-            if(currentPlayers == 0)
+            if (currentPlayers == 0)
                 return@runTaskTimer
 
             val needed = max(minPlayers - currentPlayers, 0)
@@ -71,18 +71,21 @@ class FlashPlugin : JavaPlugin(), Listener {
                 this.lobbyTime = 20
                 lobbyTimerTask?.cancel()
                 lobbyTimerTask = null
-            } else {
-                if (this.lobbyTimerTask != null) return@runTaskTimer
-                this.lobbyTimerTask = Bukkit.getScheduler().runTaskTimer(this, Runnable {
-                    this.lobbyTime--
-                    Bukkit.getOnlinePlayers().forEach { player -> player.level = this.lobbyTime }
-                    if (this.lobbyTime <= 0) {
-                        this.lobbyTimerTask!!.cancel()
-                        this.playerCheckTask!!.cancel()
-                        this.startGame()
-                    }
-                }, 0, 20)
+
+                return@runTaskTimer
             }
+
+            if (this.lobbyTimerTask != null) return@runTaskTimer
+
+            this.lobbyTimerTask = Bukkit.getScheduler().runTaskTimer(this, Runnable {
+                this.lobbyTime--
+                Bukkit.getOnlinePlayers().forEach { player -> player.level = this.lobbyTime }
+                if (this.lobbyTime <= 0) {
+                    this.lobbyTimerTask!!.cancel()
+                    this.playerCheckTask!!.cancel()
+                    this.startGame()
+                }
+            }, 0, 20)
 
             if (currentPlayers >= this.maxPlayers) {
                 this.lobbyTime = 10
