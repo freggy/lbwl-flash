@@ -33,7 +33,7 @@ fun Player.setCurrentCheckpoint(checkpoint: Checkpoint) {
 fun Player.respawn() {
     this.applyEffects()
 
-    if (gameData[player]!!.checkpoints.isEmpty()) {
+    if (gameData[player]?.checkpoints.isNullOrEmpty()) {
         gameData[player]?.spawn?.let { this.teleport(it) }
     } else {
         this.getCurrentCheckPointLocation()?.let { this.teleport(it) }
