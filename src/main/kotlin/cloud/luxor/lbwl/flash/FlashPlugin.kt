@@ -54,6 +54,8 @@ class FlashPlugin : JavaPlugin(), Listener {
         }
 
     private fun startWaitingPhase() {
+        logger.log(Level.INFO, "Started waiting phase!")
+
         var counter = 0
         this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, Runnable runTaskTimer@{
             val currentPlayers = Bukkit.getOnlinePlayers().size
@@ -127,6 +129,7 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     private fun startGame() {
+        logger.log(Level.INFO, "Started Game!")
         val (map, mapDir) = this.mapVoting.determineMap()
         this.mapConfig = map
         this.mapVoting.end()
@@ -188,6 +191,7 @@ class FlashPlugin : JavaPlugin(), Listener {
 
     private fun loadMapInfo(): List<Pair<MapConfig, File>> {
         val file = File(this.dataFolder, "maps")
+        logger.log(Level.INFO, "Loading all available Maps!")
         return file.listFiles()
             ?.filter { it.isDirectory }
             ?.map { File(it.absolutePath, "mapconfig.yml") }
@@ -197,8 +201,9 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     private fun loadMap(config: MapConfig, mapDir: File): World {
+        logger.log(Level.INFO, "Loading map $config from '${mapDir.absolutePath}!'")
         val worldName = config.name.trim().lowercase()
-        this.logger.log(Level.INFO, "Copying '${mapDir.name}' to '$worldName'!")
+        this.logger.log(Level.INFO, "Copying '${mapDir.absolutePath}' to './$worldName'!")
 
         mapDir.copyRecursively(File(worldName), true)
         val world = WorldCreator(worldName)

@@ -7,15 +7,15 @@ import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
 
 
-class MapConfig(
-    val name: String,
+data class MapConfig(
+    val name: String = "null",
     val checkpoints: Int,
-    val builder: String,
+    val builder: String = "",
     val time: Int,
-    val mode: String,
-    val speedLevel: Int,
-    val item: Material,
-    val spawnString: String
+    val mode: String = "easy",
+    val speedLevel: Int = 19,
+    val item: Material = Material.STONE,
+    val spawnString: String = "0,0,0,0"
 ) {
     companion object {
         fun read(file: File): MapConfig {
@@ -33,19 +33,17 @@ class MapConfig(
         }
 
         // stupid legacy location format
-        fun locFromString(s: String, world: World): Location? {
-            val split = s.split(",")
-            val values = DoubleArray(split.size)
-            for (i in split.indices) values[i] = split[i].toDouble()
-            if (values.size >= 3) {
-                val location =
-                    Location(world, values[0], values[1], values[2])
-                if (values.size >= 4) {
-                    location.yaw = values[3].toFloat() * 90.0f
-                }
-                return location
-            }
-            return null
+        fun locFromString(rawLocation: String, world: World): Location? {
+            val pos = rawLocation
+                .split(",")
+                .map { it.toDouble() }
+            if (pos.size < 3)
+                return null
+            val location = Location(world, pos[0], pos[1], pos[2])
+            location.yaw = pos
+                .getOrElse(3) { 0 }
+                .toFloat() * 90
+            return location
         }
     }
 }
