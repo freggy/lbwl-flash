@@ -5,6 +5,7 @@ import org.bukkit.Material
 import org.bukkit.World
 import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
+import java.lang.Error
 
 
 data class MapConfig(
@@ -18,18 +19,23 @@ data class MapConfig(
     val spawnString: String = "0,0,0,0"
 ) {
     companion object {
-        fun read(file: File): MapConfig {
+        fun read(file: File): Result<MapConfig> {
             val yaml = YamlConfiguration.loadConfiguration(file)
-            return MapConfig(
-                yaml.getString("name") ?: "null",
-                yaml.getInt("checkpoints"),
-                yaml.getString("author").orEmpty(),
-                yaml.getInt("time"),
-                yaml.getString("mode") ?: "easy",
-                yaml.getInt("speedLevel"),
-                Material.valueOf(yaml.getString("item")?.uppercase() ?: "STONE"),
-                yaml.getString("spawn") ?: "0,0,0,0"
-            )
+            val name = yaml.getString("name")
+            return name?.let { mapName ->
+                Result.success(
+                    MapConfig(
+                        mapName,
+                        yaml.getInt("checkpoints"),
+                        yaml.getString("author").orEmpty(),
+                        yaml.getInt("time"),
+                        yaml.getString("mode") ?: "easy",
+                        yaml.getInt("speedLevel"),
+                        Material.valueOf(yaml.getString("item")?.uppercase() ?: "STONE"),
+                        yaml.getString("spawn") ?: "0,0,0,0"
+                    )
+                )
+            } ?: Result.failure(Error("Map ${file.path} is not a valid config file!"))
         }
 
         // stupid legacy location format

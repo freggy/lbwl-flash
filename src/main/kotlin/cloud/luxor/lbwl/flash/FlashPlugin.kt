@@ -194,10 +194,12 @@ class FlashPlugin : JavaPlugin(), Listener {
         logger.log(Level.INFO, "Loading all available Maps!")
         return file.listFiles()
             ?.filter { it.isDirectory }
-            ?.map { File(it.absolutePath, "mapconfig.yml") }
-            ?.map { MapConfig.read(it) to it.parentFile }
-            ?.toList()
-            ?: throw Exception("no maps found")
+            ?.mapNotNull {
+                MapConfig.read(File(it, "mapconfig.yml")).getOrElse { err ->
+                    logger.warning(err.message)
+                    null
+                }?.let { config -> config to it }
+            } ?: throw Exception("no maps found")
     }
 
     private fun loadMap(config: MapConfig, mapDir: File): World {
