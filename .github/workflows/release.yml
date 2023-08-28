@@ -27,7 +27,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@9ec57ed1fcdbf14dcef7dfbe97b2010124a938b7
         with:
-          images: ${{ secrets.DOCKERHUB_USERNAME }}/bpmn_recommender
+          images: ${{ secrets.DOCKERHUB_USERNAME }}/flash
 
       - name: Build Docker image
         uses: docker/build-push-action@v2
