@@ -135,7 +135,7 @@ class FlashPlugin : JavaPlugin(), Listener {
         this.mapVoting.end()
 
         Bukkit.broadcast(Component.text("$PREFIX §aDie Mapabstimmung ist beendet!"))
-        Bukkit.broadcast(Component.text("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.builder} §7gespielt!"))
+        Bukkit.broadcast(Component.text("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.author} §7gespielt!"))
 
         val world = this.loadMap(map, mapDir)
         this.scoreboard.startDisplay()

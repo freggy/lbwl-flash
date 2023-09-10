@@ -1,5 +1,9 @@
 package cloud.luxor.lbwl.flash
 
+import com.charleskorn.kaml.PolymorphismStyle
+import com.charleskorn.kaml.Yaml
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
@@ -8,10 +12,11 @@ import java.io.File
 import java.lang.Error
 
 
+@Serializable
 data class MapConfig(
     val name: String = "null",
     val checkpoints: Int,
-    val builder: String = "",
+    val author: String = "",
     val time: Int,
     val mode: String = "easy",
     val speedLevel: Int = 19,
@@ -20,22 +25,12 @@ data class MapConfig(
 ) {
     companion object {
         fun read(file: File): Result<MapConfig> {
-            val yaml = YamlConfiguration.loadConfiguration(file)
-            val name = yaml.getString("name")
-            return name?.let { mapName ->
-                Result.success(
-                    MapConfig(
-                        mapName,
-                        yaml.getInt("checkpoints"),
-                        yaml.getString("author").orEmpty(),
-                        yaml.getInt("time"),
-                        yaml.getString("mode") ?: "easy",
-                        yaml.getInt("speedLevel"),
-                        Material.valueOf(yaml.getString("item")?.uppercase() ?: "STONE"),
-                        yaml.getString("spawn") ?: "0,0,0,0"
-                    )
-                )
-            } ?: Result.failure(Error("Map ${file.path} is not a valid config file!"))
+            return try {
+                val conf = createYamlParser().decodeFromString<MapConfig>(file.readText())
+                Result.success(conf)
+            } catch (e: Exception) {
+                Result.failure(e)
+            }
         }
 
         // stupid legacy location format
@@ -52,4 +47,13 @@ data class MapConfig(
             return location
         }
     }
+}
+
+
+private fun createYamlParser(): Yaml {
+    val yamlConfig = Yaml.default.configuration.copy(
+        polymorphismStyle = PolymorphismStyle.Property,
+        polymorphismPropertyName = "type",
+    )
+    return Yaml(Yaml.default.serializersModule, yamlConfig)
 }

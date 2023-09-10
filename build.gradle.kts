@@ -20,7 +20,7 @@ dependencies {
      * paper
      */
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.1")
+    implementation("com.charleskorn.kaml:kaml:0.49.0")
     testImplementation(kotlin("test"))
 }
 
