@@ -15,7 +15,7 @@ data class MapConfig(
     val name: String = "null",
     val checkpoints: Int,
     val author: String = "",
-    val time: Int,
+    val time: Int? = null,
     val mode: String = "easy",
     val speedLevel: Int = 19,
     val item: Material = Material.STONE,
