@@ -140,7 +140,7 @@ class FlashPlugin : JavaPlugin(), Listener {
         val world = this.loadMap(map, mapDir)
         this.scoreboard.startDisplay()
 
-        this.mapSpawnLocation = MapConfig.locFromString(map.spawnString, world)
+        this.mapSpawnLocation = MapConfig.locFromString(map.spawn, world)
 
         Bukkit.getOnlinePlayers().forEach {
             this.scoreboard.show(it)

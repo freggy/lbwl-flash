@@ -7,9 +7,7 @@ import kotlinx.serialization.decodeFromString
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
-import org.bukkit.configuration.file.YamlConfiguration
 import java.io.File
-import java.lang.Error
 
 
 @Serializable
@@ -21,7 +19,7 @@ data class MapConfig(
     val mode: String = "easy",
     val speedLevel: Int = 19,
     val item: Material = Material.STONE,
-    val spawnString: String = "0,0,0,0"
+    val spawn: String = "0,0,0,0"
 ) {
     companion object {
         fun read(file: File): Result<MapConfig> {
