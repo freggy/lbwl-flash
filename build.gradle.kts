@@ -20,7 +20,7 @@ dependencies {
      * paper
      */
     compileOnly("io.papermc.paper:paper-api:1.20.1-R0.1-SNAPSHOT")
-    implementation("com.charleskorn.kaml:kaml:0.49.0")
+    implementation("com.charleskorn.kaml:kaml:0.54.0")
     testImplementation(kotlin("test"))
 }
 

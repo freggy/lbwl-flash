@@ -194,6 +194,7 @@ class FlashPlugin : JavaPlugin(), Listener {
         logger.log(Level.INFO, "Loading all available Maps!")
         return file.listFiles()
             ?.filter { it.isDirectory }
+            ?.filter { File(it, "mapconfig.yml").exists() && File(it, "mapconfig.yml").isFile }
             ?.mapNotNull {
                 MapConfig.read(File(it, "mapconfig.yml")).getOrElse { err ->
                     logger.warning(err.message)
