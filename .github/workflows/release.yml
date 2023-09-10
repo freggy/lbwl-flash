@@ -6,9 +6,6 @@ on:
   release:
     types: [ published ]
 
-env:
-  BPM_CONFIG: ${{ secrets.BPM_CONFIG }}
-
 jobs:
   build-and-push-image:
     runs-on: ubuntu-latest
