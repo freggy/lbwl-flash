@@ -7,6 +7,7 @@ import kotlinx.serialization.decodeFromString
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
+import org.slf4j.Logger
 import java.io.File
 
 
@@ -22,11 +23,21 @@ data class MapConfig(
     val spawn: String = "0,0,0,0"
 ) {
     companion object {
-        fun read(file: File): Result<MapConfig> {
+
+        /**
+         * read a mapconfig.yml file for a flash map
+         *
+         * @param file the mapconfig.yml file
+         * @param logger optional for logging the current name of the map
+         * @return a result of the mapconfig, one should explicitly handle the exceptions that happens during parsing
+         */
+        fun read(file: File, logger: Logger? = null): Result<MapConfig> {
             return try {
                 val conf = createYamlParser().decodeFromString<MapConfig>(file.readText())
+                logger?.info("Loaded map '${conf.name}'")
                 Result.success(conf)
             } catch (e: Exception) {
+                logger?.warn("Failed to load map config: ${file.name}")
                 Result.failure(e)
             }
         }

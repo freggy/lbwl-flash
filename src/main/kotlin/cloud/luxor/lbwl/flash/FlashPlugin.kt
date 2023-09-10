@@ -196,7 +196,7 @@ class FlashPlugin : JavaPlugin(), Listener {
             ?.filter { it.isDirectory }
             ?.filter { File(it, "mapconfig.yml").exists() && File(it, "mapconfig.yml").isFile }
             ?.mapNotNull {
-                MapConfig.read(File(it, "mapconfig.yml")).getOrElse { err ->
+                MapConfig.read(File(it, "mapconfig.yml"), slF4JLogger).getOrElse { err ->
                     logger.warning(err.message)
                     null
                 }?.let { config -> config to it }
