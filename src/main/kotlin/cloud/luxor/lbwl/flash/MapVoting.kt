@@ -43,7 +43,7 @@ class MapVoting(private val maps: List<Pair<MapConfig, File>>) : Listener {
             meta.lore(
                 listOf(
                     Component
-                        .text("Erbauer: §b${mapConfig.builder}")
+                        .text("Erbauer: §b${mapConfig.author}")
                         .style(Style.style(TextColor.color(Color.YELLOW.rgb)))
                 )
             )

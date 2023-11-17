@@ -54,6 +54,8 @@ class FlashPlugin : JavaPlugin(), Listener {
         }
 
     private fun startWaitingPhase() {
+        logger.log(Level.INFO, "Started waiting phase!")
+
         var counter = 0
         this.playerCheckTask = Bukkit.getScheduler().runTaskTimer(this, Runnable runTaskTimer@{
             val currentPlayers = Bukkit.getOnlinePlayers().size
@@ -127,17 +129,18 @@ class FlashPlugin : JavaPlugin(), Listener {
     }
 
     private fun startGame() {
+        logger.log(Level.INFO, "Started Game!")
         val (map, mapDir) = this.mapVoting.determineMap()
         this.mapConfig = map
         this.mapVoting.end()
 
         Bukkit.broadcast(Component.text("$PREFIX §aDie Mapabstimmung ist beendet!"))
-        Bukkit.broadcast(Component.text("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.builder} §7gespielt!"))
+        Bukkit.broadcast(Component.text("$PREFIX §7Es wird auf der Map §b${map.name} §7von §b${map.author} §7gespielt!"))
 
         val world = this.loadMap(map, mapDir)
         this.scoreboard.startDisplay()
 
-        this.mapSpawnLocation = MapConfig.locFromString(map.spawnString, world)
+        this.mapSpawnLocation = MapConfig.locFromString(map.spawn, world)
 
         Bukkit.getOnlinePlayers().forEach {
             this.scoreboard.show(it)
@@ -188,19 +191,24 @@ class FlashPlugin : JavaPlugin(), Listener {
 
     private fun loadMapInfo(): List<Pair<MapConfig, File>> {
         val file = File(this.dataFolder, "maps")
+        logger.log(Level.INFO, "Loading all available Maps!")
         return file.listFiles()
             ?.filter { it.isDirectory }
-            ?.map { File(it.absolutePath, "mapconfig.yml") }
-            ?.map { MapConfig.read(it) to it.parentFile }
-            ?.toList()
-            ?: throw Exception("no maps found")
+            ?.filter { File(it, "mapconfig.yml").exists() && File(it, "mapconfig.yml").isFile }
+            ?.mapNotNull {
+                MapConfig.read(File(it, "mapconfig.yml"), slF4JLogger).getOrElse { err ->
+                    logger.warning(err.message)
+                    null
+                }?.let { config -> config to it }
+            } ?: throw Exception("no maps found")
     }
 
     private fun loadMap(config: MapConfig, mapDir: File): World {
+        logger.log(Level.INFO, "Loading map $config from '${mapDir.absolutePath}!'")
         val worldName = config.name.trim().lowercase()
-        this.logger.log(Level.INFO, "Copying '${mapDir.name}' to '$worldName'!")
+        this.logger.log(Level.INFO, "Copying '${mapDir.absolutePath}' to './$worldName'!")
 
-        mapDir.copyRecursively(File(worldName))
+        mapDir.copyRecursively(File(worldName), true)
         val world = WorldCreator(worldName)
             .generateStructures(false)
             .environment(World.Environment.NORMAL)

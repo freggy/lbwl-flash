@@ -1,51 +1,68 @@
 package cloud.luxor.lbwl.flash
 
+import com.charleskorn.kaml.PolymorphismStyle
+import com.charleskorn.kaml.Yaml
+import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
 import org.bukkit.Location
 import org.bukkit.Material
 import org.bukkit.World
-import org.bukkit.configuration.file.YamlConfiguration
+import org.slf4j.Logger
 import java.io.File
 
 
-class MapConfig(
-    val name: String,
+@Serializable
+data class MapConfig(
+    val name: String = "null",
     val checkpoints: Int,
-    val builder: String,
-    val time: Int,
-    val mode: String,
-    val speedLevel: Int,
-    val item: Material,
-    val spawnString: String
+    val author: String = "",
+    val time: Int? = null,
+    val mode: String = "easy",
+    val speedLevel: Int = 19,
+    val item: Material = Material.STONE,
+    val spawn: String = "0,0,0,0"
 ) {
     companion object {
-        fun read(file: File): MapConfig {
-            val yaml = YamlConfiguration.loadConfiguration(file)
-            return MapConfig(
-                yaml.getString("name") ?: "null",
-                yaml.getInt("checkpoints"),
-                yaml.getString("author").orEmpty(),
-                yaml.getInt("time"),
-                yaml.getString("mode") ?: "easy",
-                yaml.getInt("speedLevel"),
-                Material.valueOf(yaml.getString("item")?.uppercase() ?: "STONE"),
-                yaml.getString("spawn") ?: "0,0,0,0"
-            )
+
+        /**
+         * read a mapconfig.yml file for a flash map
+         *
+         * @param file the mapconfig.yml file
+         * @param logger optional for logging the current name of the map
+         * @return a result of the mapconfig, one should explicitly handle the exceptions that happens during parsing
+         */
+        fun read(file: File, logger: Logger? = null): Result<MapConfig> {
+            return try {
+                val conf = createYamlParser().decodeFromString<MapConfig>(file.readText())
+                logger?.info("Loaded map '${conf.name}'")
+                Result.success(conf)
+            } catch (e: Exception) {
+                logger?.warn("Failed to load map config: ${file.name}")
+                Result.failure(e)
+            }
         }
 
         // stupid legacy location format
-        fun locFromString(s: String, world: World): Location? {
-            val split = s.split(",")
-            val values = DoubleArray(split.size)
-            for (i in split.indices) values[i] = split[i].toDouble()
-            if (values.size >= 3) {
-                val location =
-                    Location(world, values[0], values[1], values[2])
-                if (values.size >= 4) {
-                    location.yaw = values[3].toFloat() * 90.0f
-                }
-                return location
-            }
-            return null
+        fun locFromString(rawLocation: String, world: World): Location? {
+            val pos = rawLocation
+                .split(",")
+                .map { it.toDouble() }
+            if (pos.size < 3)
+                return null
+            val location = Location(world, pos[0], pos[1], pos[2])
+            location.yaw = pos
+                .getOrElse(3) { 0 }
+                .toFloat() * 90
+            return location
         }
     }
+}
+
+
+private fun createYamlParser(): Yaml {
+    val yamlConfig = Yaml.default.configuration.copy(
+        polymorphismStyle = PolymorphismStyle.Property,
+        polymorphismPropertyName = "type",
+    )
+    return Yaml(Yaml.default.serializersModule, yamlConfig)
 }
