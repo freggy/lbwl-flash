@@ -1,8 +1,8 @@
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jdk
 
 EXPOSE 25565
 WORKDIR /opt/paper
-ADD https://api.papermc.io/v2/projects/paper/versions/1.20.2/builds/297/downloads/paper-1.20.2-297.jar paper.jar
+ADD https://api.papermc.io/v2/projects/paper/versions/1.21.1/builds/122/downloads/paper-1.21.1-122.jar paper.jar
 ADD eula.txt eula.txt
 
 #using optimised Garbage Collector Flags for Minecraft (https://aikar.co/2018/07/02/tuning-the-jvm-g1gc-garbage-collector-flags-for-minecraft/)
