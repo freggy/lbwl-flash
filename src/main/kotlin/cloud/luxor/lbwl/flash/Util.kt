@@ -46,7 +46,7 @@ fun createTwitterLink(click: String, tweet: String, vararg hashtags: String): Te
 }
 
 fun spawnRandomFirework(plugin: Plugin, loc: Location) {
-    val fw = loc.world.spawnEntity(loc, EntityType.FIREWORK) as Firework
+    val fw = loc.world.spawnEntity(loc, EntityType.FIREWORK_ROCKET) as Firework
     val fwm = fw.fireworkMeta
     val r = Random()
     val rt: Int = r.nextInt(5) + 1

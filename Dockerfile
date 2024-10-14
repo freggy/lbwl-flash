@@ -1,4 +1,4 @@
-FROM gradle:7.6.1-jdk17 as Builder
+FROM gradle:jdk21-alpine as Builder
 
 ADD . /flash
 WORKDIR /flash
@@ -7,11 +7,11 @@ RUN chmod u+x gradlew
 RUN ./gradlew build --exclude-task test
 
 
-FROM eclipse-temurin:17-jdk
+FROM eclipse-temurin:21-jdk
 
 EXPOSE 25565
 WORKDIR /opt/paper
-ADD https://api.papermc.io/v2/projects/paper/versions/1.20.2/builds/297/downloads/paper-1.20.2-297.jar paper.jar
+ADD https://api.papermc.io/v2/projects/paper/versions/1.21.1/builds/122/downloads/paper-1.21.1-122.jar paper.jar
 RUN echo "eula=true" > eula.txt
 COPY --from=Builder /flash/build/libs/lbwl-flash-all-*.jar plugins/flash.jar
 

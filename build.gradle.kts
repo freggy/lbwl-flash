@@ -1,6 +1,6 @@
 plugins {
-    kotlin("jvm") version "1.9.20"
-    kotlin("plugin.serialization") version "1.9.20"
+    kotlin("jvm") version "2.0.21"
+    kotlin("plugin.serialization") version "2.0.21"
 }
 
 group = "cloud.luxor"
@@ -19,13 +19,13 @@ dependencies {
     /**
      * paper
      */
-    compileOnly("io.papermc.paper:paper-api:1.20.2-R0.1-SNAPSHOT")
-    implementation("com.charleskorn.kaml:kaml:0.55.0")
+    compileOnly("io.papermc.paper:paper-api:1.21.1-R0.1-SNAPSHOT")
+    implementation("com.charleskorn.kaml:kaml:0.61.0")
 }
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
